@@ -1,0 +1,33 @@
+<html>
+    <header>
+        <script src="./main.js"></script>
+        <script src="./string.js"></script>
+        <script src="./filters.js"></script>
+        <meta charset="utf-8"/>
+    </header>
+    <body>
+            <img src=""  />
+            <canvas width="100" height="100" id="canvas"></canvas>
+            <input type="file" onchange="previewFile()"><br>
+            <input id="constantLimiar" type="text" placeholder="Constante do limiar">
+            <button onclick='photo.threshold(document.getElementById("constantLimiar").value)'>Limiar</button>
+            <button onclick='photo.blackWhite()'>Preto e Branco</button>
+            <button onclick='photo.negative()'>Negativo</button>
+            <input id="constant" type="text" placeholder="Constante">
+            <button onclick='photo.logTransformation(document.getElementById("constant").value)'>Transformação Log</button>
+            <input id="gamma" type="float" placeholder="Gama">
+            <button onclick='photo.gamma(document.getElementById("constant").value,document.getElementById("gamma").value)'>Gama</button>
+            <select id='layerOptions'>
+                    <option value="1">Primeira camada</option>
+                    <option value="2">Segunda camada</option>
+                    <option value="3">Terceira camada</option>
+                    <option value="4">Quarta camada</option>
+                    <option value="5">Quinta camada</option>
+                    <option value="6">Sexta camada</option>
+                    <option value="7">Setima camada</option>
+                    <option value="8">Oitava camada</option>
+                  </select>
+            <button onclick='photo.layer(document.getElementById("layerOptions").value)'>Mostrar camada</button>
+          
+    </body>
+</html>
