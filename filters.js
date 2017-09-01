@@ -114,9 +114,9 @@ photoShop.prototype.gamma = function (constant,gamma){
     console.log(Math.pow(imgData.data[1],gamma))
     for (var i=0;i<imgData.data.length;i+=4)
         {
-        imgData.data[i]=constant*(Math.pow(imgData.data[i],1/gamma));
-        imgData.data[i+1]=constant*(Math.pow(imgData.data[i+1],1/gamma));
-        imgData.data[i+2]=constant*(Math.pow(imgData.data[i+2],1/gamma));
+        imgData.data[i]=constant*(Math.pow(imgData.data[i]/255,1/gamma))*255;
+        imgData.data[i+1]=constant*(Math.pow(imgData.data[i+1]/255,1/gamma))*255;
+        imgData.data[i+2]=constant*(Math.pow(imgData.data[i+2]/255,1/gamma))*255;
         imgData.data[i+3]=255;
         }
 
