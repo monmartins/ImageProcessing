@@ -88,9 +88,9 @@ photoShop.prototype.logTransformation= function(constant){
     ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
     var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
     for (var i=0;i<imgData.data.length;i+=4){
-        imgData.data[i]=constant*(Math.log(1 + (imgData.data[i])));
-        imgData.data[i+1]=constant*(Math.log(1 + (imgData.data[i+1])));
-        imgData.data[i+2]=constant*(Math.log(1 + (imgData.data[i+2])));
+        imgData.data[i]=constant*(Math.log(1 + (imgData.data[i])/255))*255;
+        imgData.data[i+1]=constant*(Math.log(1 + (imgData.data[i+1])/255))*255;
+        imgData.data[i+2]=constant*(Math.log(1 + (imgData.data[i+2])/255))*255;
         imgData.data[i+3]=255;
     }
 
