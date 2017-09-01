@@ -76,7 +76,7 @@ photoShop.prototype.negative= function(){
 }
 photoShop.prototype.logTransformation= function(constant){
     if(constant){
-
+        //ok
     }else{
         constant = 1;
     }
@@ -88,9 +88,9 @@ photoShop.prototype.logTransformation= function(constant){
     ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
     var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
     for (var i=0;i<imgData.data.length;i+=4){
-        imgData.data[i]=constant*(Math.log(1 + imgData.data[i]))*25;
-        imgData.data[i+1]=constant*(Math.log(1 + imgData.data[i+1]))*25;
-        imgData.data[i+2]=constant*(Math.log(1 + imgData.data[i+2]))*25;
+        imgData.data[i]=constant*(Math.log(1 + (imgData.data[i])));
+        imgData.data[i+1]=constant*(Math.log(1 + (imgData.data[i+1])));
+        imgData.data[i+2]=constant*(Math.log(1 + (imgData.data[i+2])));
         imgData.data[i+3]=255;
     }
 
@@ -99,7 +99,7 @@ photoShop.prototype.logTransformation= function(constant){
 }
 photoShop.prototype.gamma = function (constant,gamma){
     if(constant){
-        
+        //ok        
     }else{
         constant = 1;
     }
@@ -110,13 +110,11 @@ photoShop.prototype.gamma = function (constant,gamma){
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
     var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
-    console.log(gamma)
-    console.log(Math.pow(imgData.data[1],gamma))
     for (var i=0;i<imgData.data.length;i+=4)
         {
-        imgData.data[i]=constant*(Math.pow(imgData.data[i]/255,1/gamma))*255;
-        imgData.data[i+1]=constant*(Math.pow(imgData.data[i+1]/255,1/gamma))*255;
-        imgData.data[i+2]=constant*(Math.pow(imgData.data[i+2]/255,1/gamma))*255;
+        imgData.data[i]=constant*(Math.pow(imgData.data[i]/255,gamma))*255;
+        imgData.data[i+1]=constant*(Math.pow(imgData.data[i+1]/255,gamma))*255;
+        imgData.data[i+2]=constant*(Math.pow(imgData.data[i+2]/255,gamma))*255;
         imgData.data[i+3]=255;
         }
 
