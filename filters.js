@@ -122,7 +122,6 @@ photoShop.prototype.gamma = function (constant,gamma){
     
 }
 photoShop.prototype.layer= function (layer){
-    console.log(layer)
     layer = layer - 1
     preview =document.createElement('img');
     preview.src = photo.get();
@@ -131,24 +130,17 @@ photoShop.prototype.layer= function (layer){
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
     var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
-    console.log(imgData.data[1].toString(2));
-    console.log(imgData.data[1].toString(2)[layer]);
-    var listBin = new String("00000000");
-    listBin.replaceAt(layer,imgData.data[1].toString(2)[layer]) 
-    console.log(listBin)
-    num = parseInt(listBin.value,2);
-    console.log(num)
     for (var i=0;i<imgData.data.length;i+=4){
-        var listBin = new String("00000000");
-        listBin.replaceAt(layer,imgData.data[i].toString(2)[layer]) 
+        var listBin = new String(imgData.data[i].toString(2));
+        listBin.bitSlicingLayer(layer) 
         num = parseInt(listBin.value,2);
         imgData.data[i]=num;
-        var listBin = new String("00000000");
-        listBin.replaceAt(layer,imgData.data[i+1].toString(2)[layer]) 
+        var listBin = new String(imgData.data[i+1].toString(2));
+        listBin.bitSlicingLayer(layer) 
         num = parseInt(listBin.value,2);
         imgData.data[i+1]=num;
-        var listBin = new String("00000000");
-        listBin.replaceAt(layer,imgData.data[i+2].toString(2)[layer]) 
+        var listBin = new String(imgData.data[i+2].toString(2));
+        listBin.bitSlicingLayer(layer) 
         num = parseInt(listBin.value,2);
         imgData.data[i+2]=num;
         imgData.data[i+3]=255;
