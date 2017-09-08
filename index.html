@@ -17,6 +17,8 @@
             <button onclick='photo.logTransformation(document.getElementById("constant").value)'>Transformação Log</button>
             <input id="gamma" type="float" placeholder="Gama">
             <button onclick='photo.gamma(document.getElementById("constant").value,document.getElementById("gamma").value)'>Gama</button>
+            <input id="twopoints" type="text" placeholder="(a,b),(c,d) e a < c">
+            <button onclick='photo.piecewise(document.getElementById("twopoints").value)'>Piecewise</button>
             <select id='layerOptions'>
                     <option value="1">Primeira camada</option>
                     <option value="2">Segunda camada</option>
