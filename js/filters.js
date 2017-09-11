@@ -187,30 +187,23 @@ photoShop.prototype.histogram= function (){
     preview = photo.getPreview();
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-    var x1 = new Array(255).join('0').split('');
-    console.log(x1)
-    for (var i=0;i<imgData.data.length;i+=4){
-        x1[parseInt(imgData.data[i])]=parseInt(x1[imgData.data[i]])+1;
-        x1[parseInt(imgData.data[i+1])]=parseInt(x1[imgData.data[i+1]])+1;
-        x1[parseInt(imgData.data[i+2])]=parseInt(x1[imgData.data[i+2]])+1;
-        // console.log(imgData.data[i+1]);
-        // imgData.data[i+2];
+    var x = [];
+    for(var i=0; i<imgData.data.length; i++) {
+        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
+        x[i] = average;
     }
-    console.log(x1)
-    var trace1 = {
-      x: x1,
-      type: "histogram",
-       opacity: 0.5,
+    var trace = {
+        x: x,
+        type: "histogram",
+        opacity: 0.5,
         marker: {
-        color: 'green',
+            color: 'green',
         },
-    };
-    var data = [trace1];
+    }
+    var data = [trace];
     var layout = {barmode: "overlay"};
     Plotly.newPlot("histogramDiv", data, layout);
-
 }
-
 
 photoShop.prototype.histogramEqGlobal= function(){}
 photoShop.prototype.histogramEqLocal= function(){}
