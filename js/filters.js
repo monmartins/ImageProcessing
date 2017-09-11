@@ -188,8 +188,8 @@ photoShop.prototype.histogram= function (){
     preview = photo.getPreview();
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-    var x = new Array(255).fill(0);
-    for(var i=0; i<imgData.data.length; i++) {
+    /*var x = new Array(255).fill(0);
+    for(var i=0; i<imgData.data.length; i+= 4) {
         average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
         x[i] = average;
     }
@@ -204,6 +204,46 @@ photoShop.prototype.histogram= function (){
     var data = [trace];
     var layout = {barmode: "overlay"};
     Plotly.newPlot("histogramDiv", data, layout);
+    */
+    var r = [];
+    var g = [];
+    var b = [];
+    for(var i=0; i<imgData.data.length; i+=4) {
+        r[i] = imgData.data[i];
+        g[i] = imgData.data[i+1];
+        b[i] = imgData.data[i+2];
+    }
+    var traceR = {
+        x: r,
+        type: "histogram",
+        name: "red",
+        opacity: 0.5,
+        marker: {
+            color: 'red',
+        }
+    }
+    var traceG = {
+        x: g,
+        type: "histogram",
+        name: "green",
+        opacity: 0.5,
+        marker: {
+            color: 'green',
+        }
+    }
+    var traceB = {
+        x: b,
+        type: "histogram",
+        name: "blue",
+        opacity: 0.5,
+        marker: {
+            color: 'blue',
+        }
+    }
+    var data = [traceR, traceG, traceB];
+    var layout = {barmode: "overlay"};
+    Plotly.newPlot("histogramDiv", data, layout);
+
 }
 
 photoShop.prototype.histogramEqGlobal= function(){
