@@ -1,21 +1,20 @@
 function photoShop(){
 }
-photoShop.prototype.get = function(){
-    return this._url
+photoShop.prototype.getPreview = function(){
+    return this._preview;
 }
-photoShop.prototype.set = function(url){
-    this._url = url;
+// photoShop.prototype.getCanvas = function(){
+//     return this._canvas;
+// }
+photoShop.prototype.set = function(preview){
+    this._preview = preview;
+    // this._canvas = canvas;
 }
 photoShop.prototype.blackWhite = function(){
-    preview =document.createElement('img');
-    preview.src = photo.get();
-    canvas.width = preview.width;
-    canvas.height = preview.height;
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
-    var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
-    // cada um dos 3 pixels de cor recebe o mesmo valor, que é a media entre seus valores originais
-    for (var i=0;i<imgData.data.length;i+=4)
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+     for (var i=0;i<imgData.data.length;i+=4)
       {
         sum = imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]
         average = sum/3;  
@@ -30,13 +29,10 @@ photoShop.prototype.threshold = function(constant){
         //127 é aproximadamente a metade de 255 e será o limite padrão
        constant = 127;
     }
-    preview =document.createElement('img');
-    preview.src = photo.get();
-    canvas.width = preview.width;
-    canvas.height=preview.height;
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
-    var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
+    
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     // dada uma cor, se a intensidade media dela for maior que a constante, então vira preto, caso contrário branco
     for (var i=0;i<imgData.data.length;i+=4)
       {
@@ -53,13 +49,9 @@ photoShop.prototype.threshold = function(constant){
       ctxt.putImageData(imgData,0,0);
 }
 photoShop.prototype.negative= function(){
-    preview =document.createElement('img');
-    preview.src = photo.get();
-    canvas.width = preview.width;
-    canvas.height=preview.height;
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
-    var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
+    preview = photo.getPreview();
+    // ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4)
       {
       imgData.data[i]=255-imgData.data[i];
@@ -73,13 +65,9 @@ photoShop.prototype.logTransformation= function(constant){
         //analisando a C*ln(x+1), C=45 permite q C*(255+1) = 255
         constant = 45;
     }
-    preview =document.createElement('img');
-    preview.src = photo.get();
-    canvas.width = preview.width;
-    canvas.height=preview.height;
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
-    var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4){
         imgData.data[i] = constant * (Math.log(imgData.data[i] + 1));
         imgData.data[i+1] = constant * (Math.log(imgData.data[i+1] + 1));
@@ -92,13 +80,9 @@ photoShop.prototype.gamma = function (constant,gamma){
     if(!constant){
         constant = 1;
     }
-    preview =document.createElement('img');
-    preview.src = photo.get();
-    canvas.width = preview.width;
-    canvas.height=preview.height;
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
-    var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4)
         {
         imgData.data[i]=constant*(Math.pow(imgData.data[i]/255,gamma))*255;
@@ -112,27 +96,23 @@ photoShop.prototype.gamma = function (constant,gamma){
 photoShop.prototype.layer= function (layer){
     layer = layer - 1
     layer = 7 - layer
-    preview =document.createElement('img');
-    preview.src = photo.get();
-    canvas.width = preview.width;
-    canvas.height=preview.height;
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
-    var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4){
         var listBin = "";
 
-        listBin = new String(imgData.data[i].toString(2));
+        listBin = new StringBit(imgData.data[i].toString(2));
         listBin.bitSlicingLayer(layer) 
         num = parseInt(listBin.value,2);
         imgData.data[i]=num;
 
-        listBin = new String(imgData.data[i+1].toString(2));
+        listBin = new StringBit(imgData.data[i+1].toString(2));
         listBin.bitSlicingLayer(layer) 
         num = parseInt(listBin.value,2);
         imgData.data[i+1]=num;
 
-        listBin = new String(imgData.data[i+2].toString(2));
+        listBin = new StringBit(imgData.data[i+2].toString(2));
         listBin.bitSlicingLayer(layer) 
         num = parseInt(listBin.value,2);
         imgData.data[i+2]=num;
@@ -151,14 +131,10 @@ photoShop.prototype.piecewise= function (points){
             var c =  parseInt(points.split(',')[2].split('(')[1],10);
             var d =  parseInt(points.split(',')[3].split(')')[0],10);
             if( a >= 0 && a <= 255 && b >= 0 && b <= 255 && c >= 0 && c <= 255 && d >= 0 && d <= 255 && a <= c){
-                preview =document.createElement('img');
-                preview.src = photo.get();
-                canvas.width = preview.width;
-                canvas.height=preview.height;
-                ctxt = canvas.getContext('2d');
-                ctxt.drawImage(preview, 0, 0, preview.width, preview.height);
-                var imgData=ctxt.getImageData(0,0,canvas.width,canvas.height);
-                for (var i=0;i<imgData.data.length;i+=4){
+                preview = photo.getPreview();
+                ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+                var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+                 for (var i=0;i<imgData.data.length;i+=4){
                     sum = imgData.data[i] + imgData.data[i+1] + imgData.data[i+2];
                     average = sum/3;
                     
@@ -207,4 +183,36 @@ photoShop.prototype.piecewise= function (points){
     
     
 }
+photoShop.prototype.histogram= function (){
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    var x1 = new Array(255).join('0').split('');
+    console.log(x1)
+    for (var i=0;i<imgData.data.length;i+=4){
+        x1[parseInt(imgData.data[i])]=parseInt(x1[imgData.data[i]])+1;
+        x1[parseInt(imgData.data[i+1])]=parseInt(x1[imgData.data[i+1]])+1;
+        x1[parseInt(imgData.data[i+2])]=parseInt(x1[imgData.data[i+2]])+1;
+        // console.log(imgData.data[i+1]);
+        // imgData.data[i+2];
+    }
+    console.log(x1)
+    var trace1 = {
+      x: x1,
+      type: "histogram",
+       opacity: 0.5,
+        marker: {
+        color: 'green',
+        },
+    };
+    var data = [trace1];
+    var layout = {barmode: "overlay"};
+    Plotly.newPlot("histogramDiv", data, layout);
+
+}
+
+
+photoShop.prototype.histogramEqGlobal= function(){}
+photoShop.prototype.histogramEqLocal= function(){}
+
 var photo = new photoShop();
