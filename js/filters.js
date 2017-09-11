@@ -183,11 +183,12 @@ photoShop.prototype.piecewise= function (points){
     
     
 }
+
 photoShop.prototype.histogram= function (){
     preview = photo.getPreview();
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-    var x = [];
+    var x = new Array(255).fill(0);
     for(var i=0; i<imgData.data.length; i++) {
         average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
         x[i] = average;
@@ -198,14 +199,53 @@ photoShop.prototype.histogram= function (){
         opacity: 0.5,
         marker: {
             color: 'green',
-        },
+        }
     }
     var data = [trace];
     var layout = {barmode: "overlay"};
     Plotly.newPlot("histogramDiv", data, layout);
 }
 
-photoShop.prototype.histogramEqGlobal= function(){}
+photoShop.prototype.histogramEqGlobal= function(){
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    var x = [];
+    var cdf = new Array(255).fill(0);
+    var min = 255;
+    for(var i=0; i<imgData.data.length; i+=4) {
+        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
+        //x[i] = average;
+        cdf[average] += 1; 
+        if (average < min)
+            min = average;
+    }
+    for (var i = 1; i < cdf.length; i++) {
+        cdf[i] = cdf[i] + cdf[i-1];
+    }
+    for(var i=0; i<imgData.data.length; i+=4) {
+        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
+        var intensity = (cdf[average] - min) * 255 / ((imgData.data.length / 4) - 1);
+        intensity = parseInt(intensity);
+        imgData.data[i] = intensity;
+        imgData.data[i+1] = intensity;
+        imgData.data[i+2] = intensity;
+        x[i] = intensity;
+    }
+    ctxt.putImageData(imgData,0,0);
+    var trace = {
+        x: x,
+        type: "histogram",
+        opacity: 0.5,
+        marker: {
+            color: 'green',
+        }
+    }
+    var data = [trace];
+    var layout = {barmode: "overlay"};
+    Plotly.newPlot("histogramDiv", data, layout);
+}
+
 photoShop.prototype.histogramEqLocal= function(){}
 
 var photo = new photoShop();
