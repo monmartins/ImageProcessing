@@ -13,6 +13,8 @@
                 console.log("if")
                 canvas.width = widthDiv;
                 canvas.height = (preview.height * widthDiv) / preview.width;
+                console.log(canvas.width)
+                console.log(canvas.height)
                 ctxt = canvas.getContext('2d');
                 ctxt.drawImage(preview, 0, 0,canvas.width, canvas.height );
             }else if(preview.height > heightDiv){
@@ -30,7 +32,9 @@
             }
             preview.width = canvas.width;
             preview.height = canvas.height;
-            photo.set(preview,canvas);
+            console.log(canvas.width)
+            console.log(canvas.height)
+            photo.set(preview);
  
         }
     }

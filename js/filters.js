@@ -12,6 +12,8 @@ photoShop.prototype.set = function(preview){
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
+    console.log(preview.width)
+    console.log(preview.height)
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
      for (var i=0;i<imgData.data.length;i+=4)
