@@ -1,6 +1,6 @@
  function previewFile(photo){
-    var widthDiv = document.getElementById('mid').offsetWidth;
-    var heightDiv = document.getElementById('mid').offsetHeight;
+    var widthDiv = document.getElementById('1').offsetWidth;
+    var heightDiv = document.getElementById('1').offsetHeight;
     var preview = document.querySelector('img'); //selects the query named img
     image    = document.querySelector('input[type=file]').files[0]; //sames as here
     var reader  = new FileReader();
@@ -13,8 +13,6 @@
                 console.log("if")
                 canvas.width = widthDiv;
                 canvas.height = (preview.height * widthDiv) / preview.width;
-                console.log(canvas.width)
-                console.log(canvas.height)
                 ctxt = canvas.getContext('2d');
                 ctxt.drawImage(preview, 0, 0,canvas.width, canvas.height );
             }else if(preview.height > heightDiv){
@@ -32,9 +30,7 @@
             }
             preview.width = canvas.width;
             preview.height = canvas.height;
-            console.log(canvas.width)
-            console.log(canvas.height)
-            photo.set(preview);
+            photo.set(preview,canvas);
  
         }
     }

@@ -12,8 +12,6 @@ photoShop.prototype.set = function(preview){
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
-    console.log(preview.width)
-    console.log(preview.height)
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
      for (var i=0;i<imgData.data.length;i+=4)
@@ -185,36 +183,222 @@ photoShop.prototype.piecewise= function (points){
     
     
 }
+
 photoShop.prototype.histogram= function (){
     preview = photo.getPreview();
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-    var x1 = new Array(255).join('0').split('');
-    console.log(x1)
-    for (var i=0;i<imgData.data.length;i+=4){
-        x1[parseInt(imgData.data[i])]=parseInt(x1[imgData.data[i]])+1;
-        x1[parseInt(imgData.data[i+1])]=parseInt(x1[imgData.data[i+1]])+1;
-        x1[parseInt(imgData.data[i+2])]=parseInt(x1[imgData.data[i+2]])+1;
-        // console.log(imgData.data[i+1]);
-        // imgData.data[i+2];
+    var r = [];
+    var g = [];
+    var b = [];
+    for(var i=0; i<imgData.data.length; i+=4) {
+        r[i] = imgData.data[i];
+        g[i] = imgData.data[i+1];
+        b[i] = imgData.data[i+2];
     }
-    console.log(x1)
-    var trace1 = {
-      x: x1,
-      type: "histogram",
-       opacity: 0.5,
+    var traceR = {
+        x: r,
+        type: "histogram",
+        name: "red",
+        opacity: 0.5,
         marker: {
-        color: 'green',
-        },
-    };
-    var data = [trace1];
+            color: 'red',
+        }
+    }
+    var traceG = {
+        x: g,
+        type: "histogram",
+        name: "green",
+        opacity: 0.5,
+        marker: {
+            color: 'green',
+        }
+    }
+    var traceB = {
+        x: b,
+        type: "histogram",
+        name: "blue",
+        opacity: 0.5,
+        marker: {
+            color: 'blue',
+        }
+    }
+    var data = [traceR, traceG, traceB];
     var layout = {barmode: "overlay"};
     Plotly.newPlot("histogramDiv", data, layout);
 
 }
 
+photoShop.prototype.histogramEqGlobal= function(){
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    var x = [];
+    var cdf = new Array(255).fill(0);
+    var min = 255;
+    for(var i=0; i<imgData.data.length; i+=4) {
+        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
+        //x[i] = average;
+        cdf[average] += 1; 
+        if (average < min)
+            min = average;
+    }
+    for (var i = 1; i < cdf.length; i++) {
+        cdf[i] = cdf[i] + cdf[i-1];
+    }
+    for(var i=0; i<imgData.data.length; i+=4) {
+        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
+        var intensity = (cdf[average] - min) * 255 / ((imgData.data.length / 4) - 1);
+        intensity = parseInt(intensity);
+        imgData.data[i] = intensity;
+        imgData.data[i+1] = intensity;
+        imgData.data[i+2] = intensity;
+        x[i] = intensity;
+    }
+    ctxt.putImageData(imgData,0,0);
+    var trace = {
+        x: x,
+        type: "histogram",
+        opacity: 0.5,
+        marker: {
+            color: 'green',
+        }
+    }
+    var data = [trace];
+    var layout = {barmode: "overlay"};
+    Plotly.newPlot("histogramDiv", data, layout);
+}
 
-photoShop.prototype.histogramEqGlobal= function(){}
 photoShop.prototype.histogramEqLocal= function(){}
+
+photoShop.prototype.convolution55 = function(linha1,linha2,linha3,linha4,linha5){
+        var matrix = [[parseInt(linha1.split(',')[0].split('(')[1]),parseInt(linha1.split(',')[1]),parseInt(linha1.split(',')[2]),parseInt(linha1.split(',')[3]),parseInt(linha1.split(',')[4].split(')')[0])],
+        [parseInt(linha2.split(',')[0].split('(')[1]),parseInt(linha2.split(',')[1]),parseInt(linha2.split(',')[2]),parseInt(linha2.split(',')[3]),parseInt(linha2.split(',')[4].split(')')[0])],
+        [parseInt(linha3.split(',')[0].split('(')[1]),parseInt(linha3.split(',')[1]),parseInt(linha3.split(',')[2]),parseInt(linha3.split(',')[3]),parseInt(linha3.split(',')[4].split(')')[0])],
+        [parseInt(linha4.split(',')[0].split('(')[1]),parseInt(linha4.split(',')[1]),parseInt(linha4.split(',')[2]),parseInt(linha4.split(',')[3]),parseInt(linha4.split(',')[4].split(')')[0])],
+        [parseInt(linha5.split(',')[0].split('(')[1]),parseInt(linha5.split(',')[1]),parseInt(linha5.split(',')[2]),parseInt(linha5.split(',')[3]),parseInt(linha5.split(',')[4].split(')')[0])]];
+        preview = photo.getPreview();
+        ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+        var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+        // console.log(preview.width)
+        // console.log(preview.height)
+        // console.log(preview.height*preview.width*4)
+        // console.log(imgData.data.length)
+        // for(var i=0; i<imgData.data.length; i+=4) {
+        //     var r = i,g=i+1,b=i+2;
+
+
+        // }
+        var side = Math.round(Math.sqrt(matrix.length)),
+        halfSide = Math.floor(side/2),
+        src = imgData.data,
+        canvasWidth = preview.width,
+        canvasHeight = preview.height,
+        temporaryCanvas = document.createElement('canvas'),
+        temporaryCtx = temporaryCanvas.getContext('2d'),
+        outputData = temporaryCtx.createImageData(canvasWidth, canvasHeight);
+  
+    for (var y = 0; y < canvasHeight; y++) {
+  
+      for (var x = 0; x < canvasWidth; x++) {
+  
+        var dstOff = (y * canvasWidth + x) * 4,
+            sumReds = 0,
+            sumGreens = 0,
+            sumBlues = 0,
+            sumAlphas = 0;
+  
+        for (var kernelY = 0; kernelY < side; kernelY++) {
+          for (var kernelX = 0; kernelX < side; kernelX++) {
+  
+            var currentKernelY = y + kernelY - halfSide,
+                currentKernelX = x + kernelX - halfSide;
+  
+            if (currentKernelY >= 0 &&
+                currentKernelY < canvasHeight &&
+                currentKernelX >= 0 &&
+                currentKernelX < canvasWidth) {
+  
+              var offset = (currentKernelY * canvasWidth + currentKernelX) * 4,
+                  weight = matrix[kernelY * side + kernelX];
+  
+              sumReds += src[offset] * weight;
+              sumGreens += src[offset + 1] * weight;
+              sumBlues += src[offset + 2] * weight;
+            }
+          }
+        }
+  
+        outputData.data[dstOff] = sumReds;
+        outputData.data[dstOff+1] = sumGreens;
+        outputData.data[dstOff+2] = sumBlues;
+        outputData.data[dstOff+3] = 255;
+      }
+    }
+
+    ctxt.putImageData(outputData,0,0);
+}
+photoShop.prototype.convolution33 = function(linha1,linha2,linha3){
+        var matrix = [[parseInt(linha1.split(',')[0].split('(')[1]),parseInt(linha1.split(',')[1]),parseInt(linha1.split(',')[2].split(')')[0])],
+        [parseInt(linha2.split(',')[0].split('(')[1]),parseInt(linha2.split(',')[1]),parseInt(linha2.split(',')[2].split(')')[0])],
+        [parseInt(linha3.split(',')[0].split('(')[1]),parseInt(linha3.split(',')[1]),parseInt(linha3.split(',')[2].split(')')[0])]];
+        preview = photo.getPreview();
+        ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+        var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+        // for(var i=0; i<imgData.data.length; i+=4) {
+        //     var r = i,g=i+1,b=i+2;
+
+
+
+        // }
+        var side = Math.round(Math.sqrt(matrix.length)),
+        halfSide = Math.floor(side/2),
+        src = imgData.data,
+        canvasWidth = preview.width,
+        canvasHeight = preview.height;
+        // temporaryCanvas = document.createElement('canvas'),
+        // temporaryCtx = temporaryCanvas.getContext('2d'),
+        // outputData = temporaryCtx.createImageData(canvasWidth, canvasHeight);
+  
+    for (var y = 0; y < canvasHeight; y++) {
+  
+      for (var x = 0; x < canvasWidth; x++) {
+  
+        var dstOff = (y * canvasWidth + x) * 4,
+            sumReds = 0,
+            sumGreens = 0,
+            sumBlues = 0,
+            sumAlphas = 0;
+  
+        for (var kernelY = 0; kernelY < side; kernelY++) {
+          for (var kernelX = 0; kernelX < side; kernelX++) {
+  
+            var currentKernelY = y + kernelY - halfSide,
+                currentKernelX = x + kernelX - halfSide;
+  
+            if (currentKernelY >= 0 &&
+                currentKernelY < canvasHeight &&
+                currentKernelX >= 0 &&
+                currentKernelX < canvasWidth) {
+  
+              var offset = (currentKernelY * canvasWidth + currentKernelX) * 4,
+                  weight = matrix[kernelY * side + kernelX];
+  
+              sumReds += src[offset] * weight;
+              sumGreens += src[offset + 1] * weight;
+              sumBlues += src[offset + 2] * weight;
+            }
+          }
+        }
+  
+        imgData.data[dstOff] = sumReds;
+        imgData.data[dstOff+1] = sumGreens;
+        imgData.data[dstOff+2] = sumBlues;
+        imgData.data[dstOff+3] = 255;
+      }
+    }
+
+    ctxt.putImageData(imgData,0,0);
+}
 
 var photo = new photoShop();
