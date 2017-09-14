@@ -3,12 +3,8 @@ function photoShop(){
 photoShop.prototype.getPreview = function(){
     return this._preview;
 }
-// photoShop.prototype.getCanvas = function(){
-//     return this._canvas;
-// }
 photoShop.prototype.set = function(preview){
     this._preview = preview;
-    // this._canvas = canvas;
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
