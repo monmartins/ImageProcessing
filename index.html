@@ -2,22 +2,23 @@
         <header>
              <link rel="stylesheet" href="./css/custom.css" >
             
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-           
+            
+             <script src="./js/libs/jquey-3.2.1.slim.min.js"></script>
+             <script src="./js/libs/popper.js"></script>
+             <script src="./js/libs/bootstrap.min.js" ></script>
+            <link rel="stylesheet" href="./css/libs/bootstrap.css">
+            
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
     
             <script src="./js/main.js"></script>
-            <!-- <script src="./string.js"></script> -->
+            <script src="./js/string.js"></script>
             <script src="./js/filters.js"></script>
         </header>
         <head>
             <!-- Plotly.js -->
-            <script src="./js/plot.js"></script>
+            <script src="./js/libs/plot.js"></script>
         </head>
 
         <body >
@@ -25,7 +26,9 @@
             <div id="mid" class="col-md-6"> 
                 <input class="btn btn-primary " type="file" onchange="(previewFile(photo))"><br>  
                 <canvas width="100" height="100" id="canvas"></canvas>
+                <canvas width="100" height="100" id="canvasOri"></canvas>
                 <img src=""  />  
+                <img id="imgOri" src=""  />  
             </div>
             <div class="col-md-6"> 
                 <div class="jumbotron">
@@ -109,6 +112,9 @@
                                                                                                                 document.getElementById("linha21").value,
                                                                                                                 document.getElementById("linha31").value)'>Convolução</button></p>
                                             </div>
+                                            <p><button class="btn btn-primary" onclick='photo.meanFilter()'>Filtro da Média</button></p>
+                                            <p><button class="btn btn-primary" onclick='photo.mediumFilter()'>Filtro da Média Ponderada</button></p>
+                                            <p><button class="btn btn-primary" onclick='photo.medianFilter()'>Filtro da Mediana</button></p>
                                         </div>
                                     </div>
                                 </div>

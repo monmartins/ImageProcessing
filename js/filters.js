@@ -12,6 +12,8 @@ photoShop.prototype.set = function(preview){
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
+    
+                ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
      for (var i=0;i<imgData.data.length;i+=4)
@@ -31,6 +33,8 @@ photoShop.prototype.threshold = function(constant){
     }
     
     preview = photo.getPreview();
+    
+                ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     // dada uma cor, se a intensidade media dela for maior que a constante, então vira preto, caso contrário branco
@@ -50,7 +54,9 @@ photoShop.prototype.threshold = function(constant){
 }
 photoShop.prototype.negative= function(){
     preview = photo.getPreview();
-    // ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    
+                ctxt = canvas.getContext('2d');// 
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4)
       {
@@ -66,6 +72,8 @@ photoShop.prototype.logTransformation= function(constant){
         constant = 45;
     }
     preview = photo.getPreview();
+    
+                ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4){
@@ -81,6 +89,8 @@ photoShop.prototype.gamma = function (constant,gamma){
         constant = 1;
     }
     preview = photo.getPreview();
+    
+                ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4)
@@ -97,6 +107,8 @@ photoShop.prototype.layer= function (layer){
     layer = layer - 1
     layer = 7 - layer
     preview = photo.getPreview();
+    
+                ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4){
@@ -132,6 +144,8 @@ photoShop.prototype.piecewise= function (points){
             var d =  parseInt(points.split(',')[3].split(')')[0],10);
             if( a >= 0 && a <= 255 && b >= 0 && b <= 255 && c >= 0 && c <= 255 && d >= 0 && d <= 255 && a <= c){
                 preview = photo.getPreview();
+                
+                ctxt = canvas.getContext('2d');
                 ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
                 var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
                  for (var i=0;i<imgData.data.length;i+=4){
@@ -186,6 +200,8 @@ photoShop.prototype.piecewise= function (points){
 
 photoShop.prototype.histogram= function (){
     preview = photo.getPreview();
+    
+                ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     var r = [];
@@ -231,6 +247,8 @@ photoShop.prototype.histogram= function (){
 
 photoShop.prototype.histogramEqGlobal= function(){
     preview = photo.getPreview();
+    
+                ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     var x = [];
@@ -277,128 +295,210 @@ photoShop.prototype.convolution55 = function(linha1,linha2,linha3,linha4,linha5)
         [parseInt(linha3.split(',')[0].split('(')[1]),parseInt(linha3.split(',')[1]),parseInt(linha3.split(',')[2]),parseInt(linha3.split(',')[3]),parseInt(linha3.split(',')[4].split(')')[0])],
         [parseInt(linha4.split(',')[0].split('(')[1]),parseInt(linha4.split(',')[1]),parseInt(linha4.split(',')[2]),parseInt(linha4.split(',')[3]),parseInt(linha4.split(',')[4].split(')')[0])],
         [parseInt(linha5.split(',')[0].split('(')[1]),parseInt(linha5.split(',')[1]),parseInt(linha5.split(',')[2]),parseInt(linha5.split(',')[3]),parseInt(linha5.split(',')[4].split(')')[0])]];
+        var div = matrix[0].reduce((x, y) => x + y);
+        div += matrix[1].reduce((x, y) => x + y);
+        div += matrix[2].reduce((x, y) => x + y);
+        div += matrix[3].reduce((x, y) => x + y);
+        div += matrix[4].reduce((x, y) => x + y);
         preview = photo.getPreview();
+        
+                ctxt = canvas.getContext('2d');
         ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
         var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-        // console.log(preview.width)
-        // console.log(preview.height)
-        // console.log(preview.height*preview.width*4)
-        // console.log(imgData.data.length)
-        // for(var i=0; i<imgData.data.length; i+=4) {
-        //     var r = i,g=i+1,b=i+2;
+
+        for(var i=0; i<imgData.data.length; i+=4) {
+            var r = i,g=i+1,b=i+2;
+            try{
+                //primeira coluna
+
+                mr = imgData.data[(r-4*2)+(-imgData.width*4*2)] * matrix[0][0]
+                mr += imgData.data[(r-4*2)+(-imgData.width*4)] * matrix[1][0]
+                mr += imgData.data[(r-4*2)]  * matrix[2][0]
+                mr += imgData.data[(r-4*2)+(imgData.width*4)] * matrix[3][0]
+                mr += imgData.data[(r-4*2)+(imgData.width*4*2)] * matrix[4][0]
+
+                mg = imgData.data[(g-4*2)+(-imgData.width*4*2)] * matrix[0][0]
+                mg += imgData.data[(g-4*2)+(-imgData.width*4)] * matrix[1][0]
+                mg += imgData.data[g-4*2] * matrix[2][0]
+                mg += imgData.data[(g-4*2)+(imgData.width*4)] * matrix[3][0]
+                mg += imgData.data[(g-4*2)+(imgData.width*4*2)] * matrix[4][0]
+
+                mb = imgData.data[(b-4*2)+(-imgData.width*4*2)] * matrix[0][0]
+                mb += imgData.data[(b-4*2)+(-imgData.width*4)] * matrix[1][0]
+                mb += imgData.data[b-4*2]* matrix[2][0]
+                mb += imgData.data[(b-4*2)+(imgData.width*4)] * matrix[3][0]
+                mb += imgData.data[(b-4*2)+(imgData.width*4*2)] * matrix[4][0]
+
+                //segunda coluna
+
+                mr += imgData.data[(r-4)+(-imgData.width*4*2)] * matrix[0][1]
+                mr += imgData.data[(r-4)+(-imgData.width*4)] * matrix[1][1]
+                mr += imgData.data[(r-4)]  * matrix[2][1]
+                mr += imgData.data[(r-4)+(imgData.width*4)] * matrix[3][1]
+                mr += imgData.data[(r-4)+(imgData.width*4*2)] * matrix[4][1]
+
+                mg += imgData.data[(g-4)+(-imgData.width*4*2)] * matrix[0][1]
+                mg += imgData.data[(g-4)+(-imgData.width*4)] * matrix[1][1]
+                mg += imgData.data[g-4] * matrix[2][1]
+                mg += imgData.data[(g-4)+(imgData.width*4)] * matrix[3][1]
+                mg += imgData.data[(g-4)+(imgData.width*4*2)] * matrix[4][1]
+
+                mb += imgData.data[(b-4)+(-imgData.width*4*2)] * matrix[0][1]
+                mb += imgData.data[(b-4)+(-imgData.width*4)] * matrix[1][1]
+                mb += imgData.data[b-4]* matrix[2][1]
+                mb += imgData.data[(b-4)+(imgData.width*4)] * matrix[3][1]
+                mb += imgData.data[(b-4)+(imgData.width*4*2)] * matrix[4][1]
+
+                //terceira coluna
+                mr += imgData.data[(r)+(-imgData.width*4*2)] * matrix[0][2]
+                mr += imgData.data[(r)+(-imgData.width*4)] * matrix[1][2]
+                mr += imgData.data[(r)]  * matrix[2][2]
+                mr += imgData.data[(r)+(imgData.width*4)] * matrix[3][2]
+                mr += imgData.data[(r)+(imgData.width*4*2)] * matrix[4][2]
+
+                mg += imgData.data[(g)+(-imgData.width*4*2)] * matrix[0][2]
+                mg += imgData.data[(g)+(-imgData.width*4)] * matrix[1][2]
+                mg += imgData.data[g] * matrix[2][2]
+                mg += imgData.data[(g)+(imgData.width*4)] * matrix[3][2]
+                mg += imgData.data[(g)+(imgData.width*4*2)] * matrix[4][2]
+
+                mb += imgData.data[(b)+(-imgData.width*4*2)] * matrix[0][2]
+                mb += imgData.data[(b)+(-imgData.width*4)] * matrix[1][2]
+                mb += imgData.data[b]* matrix[2][2]
+                mb += imgData.data[(b)+(imgData.width*4)] * matrix[3][2]
+                mb += imgData.data[(b)+(imgData.width*4*2)] * matrix[4][2]
+
+                //quarta coluna
+                mr += imgData.data[(r+4)+(-imgData.width*4*2)] * matrix[0][3]
+                mr += imgData.data[(r+4)+(-imgData.width*4)] * matrix[1][3]
+                mr += imgData.data[(r+4)]  * matrix[2][3]
+                mr += imgData.data[(r+4)+(imgData.width*4)] * matrix[3][3]
+                mr += imgData.data[(r+4)+(imgData.width*4*2)] * matrix[4][3]
+
+                mg += imgData.data[(g+4)+(-imgData.width*4*2)] * matrix[0][3]
+                mg += imgData.data[(g+4)+(-imgData.width*4)] * matrix[1][3]
+                mg += imgData.data[g+4] * matrix[2][3]
+                mg += imgData.data[(g+4)+(imgData.width*4)] * matrix[3][3]
+                mg += imgData.data[(g+4)+(imgData.width*4*2)] * matrix[4][3]
+
+                mb += imgData.data[(b+4)+(-imgData.width*4*2)] * matrix[0][3]
+                mb += imgData.data[(b+4)+(-imgData.width*4)] * matrix[1][3]
+                mb += imgData.data[b+4]* matrix[2][3]
+                mb += imgData.data[(b+4)+(imgData.width*4)] * matrix[3][3]
+                mb += imgData.data[(b+4)+(imgData.width*4*2)] * matrix[4][3]
+
+                //quinta coluna
+                mr += imgData.data[(r+4*2)+(-imgData.width*4*2)] * matrix[0][4]
+                mr += imgData.data[(r+4*2)+(-imgData.width*4)] * matrix[1][4]
+                mr += imgData.data[(r+4*2)]  * matrix[2][4]
+                mr += imgData.data[(r+4*2)+(imgData.width*4)] * matrix[3][4]
+                mr += imgData.data[(r+4*2)+(imgData.width*4*2)] * matrix[4][4]
+
+                mg += imgData.data[(g+4*2)+(-imgData.width*4*2)] * matrix[0][4]
+                mg += imgData.data[(g+4*2)+(-imgData.width*4)] * matrix[1][4]
+                mg += imgData.data[g+4*2] * matrix[2][4]
+                mg += imgData.data[(g+4*2)+(imgData.width*4)] * matrix[3][4]
+                mg += imgData.data[(g+4*2)+(imgData.width*4*2)] * matrix[4][4]
+
+                mb += imgData.data[(b+4*2)+(-imgData.width*4*2)] * matrix[0][4]
+                mb += imgData.data[(b+4*2)+(-imgData.width*4)] * matrix[1][4]
+                mb += imgData.data[b+4*2]* matrix[2][4]
+                mb += imgData.data[(b+4*2)+(imgData.width*4)] * matrix[3][4]
+                mb += imgData.data[(b+4*2)+(imgData.width*4*2)] * matrix[4][4]
 
 
-        // }
-        var side = Math.round(Math.sqrt(matrix.length)),
-        halfSide = Math.floor(side/2),
-        src = imgData.data,
-        canvasWidth = preview.width,
-        canvasHeight = preview.height,
-        temporaryCanvas = document.createElement('canvas'),
-        temporaryCtx = temporaryCanvas.getContext('2d'),
-        outputData = temporaryCtx.createImageData(canvasWidth, canvasHeight);
-  
-    for (var y = 0; y < canvasHeight; y++) {
-  
-      for (var x = 0; x < canvasWidth; x++) {
-  
-        var dstOff = (y * canvasWidth + x) * 4,
-            sumReds = 0,
-            sumGreens = 0,
-            sumBlues = 0,
-            sumAlphas = 0;
-  
-        for (var kernelY = 0; kernelY < side; kernelY++) {
-          for (var kernelX = 0; kernelX < side; kernelX++) {
-  
-            var currentKernelY = y + kernelY - halfSide,
-                currentKernelX = x + kernelX - halfSide;
-  
-            if (currentKernelY >= 0 &&
-                currentKernelY < canvasHeight &&
-                currentKernelX >= 0 &&
-                currentKernelX < canvasWidth) {
-  
-              var offset = (currentKernelY * canvasWidth + currentKernelX) * 4,
-                  weight = matrix[kernelY * side + kernelX];
-  
-              sumReds += src[offset] * weight;
-              sumGreens += src[offset + 1] * weight;
-              sumBlues += src[offset + 2] * weight;
+                if(isNaN(mr)||isNaN(mg)||isNaN(mb)){
+                }else{
+                    // console.log(div)
+                    imgData.data[r] = mr/div
+                    imgData.data[g] = mg/div
+                    imgData.data[b] = mb/div 
+                }
+            }catch(exp){
+                continue
             }
-          }
         }
-  
-        outputData.data[dstOff] = sumReds;
-        outputData.data[dstOff+1] = sumGreens;
-        outputData.data[dstOff+2] = sumBlues;
-        outputData.data[dstOff+3] = 255;
-      }
-    }
 
-    ctxt.putImageData(outputData,0,0);
+    ctxt.putImageData(imgData,0,0);
 }
 photoShop.prototype.convolution33 = function(linha1,linha2,linha3){
         var matrix = [[parseInt(linha1.split(',')[0].split('(')[1]),parseInt(linha1.split(',')[1]),parseInt(linha1.split(',')[2].split(')')[0])],
         [parseInt(linha2.split(',')[0].split('(')[1]),parseInt(linha2.split(',')[1]),parseInt(linha2.split(',')[2].split(')')[0])],
         [parseInt(linha3.split(',')[0].split('(')[1]),parseInt(linha3.split(',')[1]),parseInt(linha3.split(',')[2].split(')')[0])]];
+        var div = matrix[0].reduce((x, y) => x + y);
+        div += matrix[1].reduce((x, y) => x + y);
+        div += matrix[2].reduce((x, y) => x + y);
         preview = photo.getPreview();
-        ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+        photo.blackWhite()
+        ctxt = canvas.getContext('2d');
+        ctxt.drawImage(photo.getPreview(), 0 , 0,preview.width, preview.height );
         var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-        // for(var i=0; i<imgData.data.length; i+=4) {
-        //     var r = i,g=i+1,b=i+2;
 
+        for(var i=0; i<imgData.data.length; i+=4) {
+            var r = i,g=i+1,b=i+2;
+            try{
+                //primeira coluna
+                mr = imgData.data[(r-4)+(-imgData.width*4)] * matrix[0][0]
+                mr += imgData.data[(r-4)]  * matrix[1][0]
+                mr += imgData.data[(r-4)+(imgData.width*4)] * matrix[2][0]
 
+                mg = imgData.data[(g-4)+(-imgData.width*4)] * matrix[0][0]
+                mg += imgData.data[g-4] * matrix[1][0]
+                mg += imgData.data[(g-4)+(imgData.width*4)] * matrix[2][0]
 
-        // }
-        var side = Math.round(Math.sqrt(matrix.length)),
-        halfSide = Math.floor(side/2),
-        src = imgData.data,
-        canvasWidth = preview.width,
-        canvasHeight = preview.height;
-        // temporaryCanvas = document.createElement('canvas'),
-        // temporaryCtx = temporaryCanvas.getContext('2d'),
-        // outputData = temporaryCtx.createImageData(canvasWidth, canvasHeight);
-  
-    for (var y = 0; y < canvasHeight; y++) {
-  
-      for (var x = 0; x < canvasWidth; x++) {
-  
-        var dstOff = (y * canvasWidth + x) * 4,
-            sumReds = 0,
-            sumGreens = 0,
-            sumBlues = 0,
-            sumAlphas = 0;
-  
-        for (var kernelY = 0; kernelY < side; kernelY++) {
-          for (var kernelX = 0; kernelX < side; kernelX++) {
-  
-            var currentKernelY = y + kernelY - halfSide,
-                currentKernelX = x + kernelX - halfSide;
-  
-            if (currentKernelY >= 0 &&
-                currentKernelY < canvasHeight &&
-                currentKernelX >= 0 &&
-                currentKernelX < canvasWidth) {
-  
-              var offset = (currentKernelY * canvasWidth + currentKernelX) * 4,
-                  weight = matrix[kernelY * side + kernelX];
-  
-              sumReds += src[offset] * weight;
-              sumGreens += src[offset + 1] * weight;
-              sumBlues += src[offset + 2] * weight;
+                mb = imgData.data[(b-4)+(-imgData.width*4)] * matrix[0][0]
+                mb += imgData.data[b-4]* matrix[1][0]
+                mb += imgData.data[(b-4)+(imgData.width*4)] * matrix[2][0]
+
+                //segunda coluna
+                mr += imgData.data[(r)+(-imgData.width*4)] * matrix[0][1]
+                mr += imgData.data[(r)]  * matrix[1][1]
+                mr += imgData.data[(r)+(imgData.width*4)] * matrix[2][1]
+
+                mg += imgData.data[(g)+(-imgData.width*4)] * matrix[0][1]
+                mg += imgData.data[g] * matrix[1][1]
+                mg += imgData.data[(g)+(imgData.width*4)] * matrix[2][1]
+
+                mb += imgData.data[(b)+(-imgData.width*4)] * matrix[0][1]
+                mb += imgData.data[b]* matrix[1][1]
+                mb += imgData.data[(b)+(imgData.width*4)] * matrix[2][1]
+
+                //terceira coluna
+                mr += imgData.data[(r+4)+(-imgData.width*4)] * matrix[0][2]
+                mr += imgData.data[(r+4)]  * matrix[1][2]
+                mr += imgData.data[(r+4)+(imgData.width*4)] * matrix[2][2]
+
+                mg += imgData.data[(g+4)+(-imgData.width*4)] * matrix[0][2]
+                mg += imgData.data[g+4] * matrix[1][2]
+                mg += imgData.data[(g+4)+(imgData.width*4)] * matrix[2][2]
+
+                mb += imgData.data[(b+4)+(-imgData.width*4)] * matrix[0][2]
+                mb += imgData.data[b+4]* matrix[1][2]
+                mb += imgData.data[(b+4)+(imgData.width*4)] * matrix[2][2]
+                if(isNaN(mr)||isNaN(mg)||isNaN(mb)){
+                }else{
+                    // console.log(div)
+                    imgData.data[r] = mr/div
+                    imgData.data[g] = mg/div
+                    imgData.data[b] = mb/div  
+                }
+            }catch(exp){
+                continue
             }
-          }
         }
-  
-        imgData.data[dstOff] = sumReds;
-        imgData.data[dstOff+1] = sumGreens;
-        imgData.data[dstOff+2] = sumBlues;
-        imgData.data[dstOff+3] = 255;
-      }
-    }
 
     ctxt.putImageData(imgData,0,0);
 }
 
+photoShop.prototype.meanFilter = function(){
+    photo.convolution33("(1,1,1)","(1,1,1)","(1,1,1)")
+}
+
+photoShop.prototype.mediumFilter = function(){
+    photo.convolution33("(1,1,1)","(1,2,1)","(1,1,1)")
+}
+
+photoShop.prototype.medianFilter = function(){
+    photo.convolution33("(0,1,0)","(1,1,1)","(0,1,0)")
+}
 var photo = new photoShop();
