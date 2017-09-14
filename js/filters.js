@@ -3,12 +3,8 @@ function photoShop(){
 photoShop.prototype.getPreview = function(){
     return this._preview;
 }
-// photoShop.prototype.getCanvas = function(){
-//     return this._canvas;
-// }
 photoShop.prototype.set = function(preview){
     this._preview = preview;
-    // this._canvas = canvas;
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
@@ -115,8 +111,7 @@ photoShop.prototype.layer= function (layer){
         listBin = new StringBit(imgData.data[i+2].toString(2));
         listBin.bitSlicingLayer(layer) 
         num = parseInt(listBin.value,2);
-        imgData.data[i+2]=num;
-        
+        imgData.data[i+2]=num;       
     }
 
      ctxt.putImageData(imgData,0,0);
@@ -165,8 +160,7 @@ photoShop.prototype.piecewise= function (points){
                     }     
                     imgData.data[i] = intensity;
                     imgData.data[i+1] = intensity;
-                    imgData.data[i+2] = intensity;
-                    
+                    imgData.data[i+2] = intensity;    
                 }
             
                  ctxt.putImageData(imgData,0,0);
@@ -179,32 +173,13 @@ photoShop.prototype.piecewise= function (points){
         }
     }else{
         return;
-    }
-    
-    
+    } 
 }
 
 photoShop.prototype.histogram= function (){
     preview = photo.getPreview();
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-    /*var x = new Array(255).fill(0);
-    for(var i=0; i<imgData.data.length; i+= 4) {
-        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
-        x[i] = average;
-    }
-    var trace = {
-        x: x,
-        type: "histogram",
-        opacity: 0.5,
-        marker: {
-            color: 'green',
-        }
-    }
-    var data = [trace];
-    var layout = {barmode: "overlay"};
-    Plotly.newPlot("histogramDiv", data, layout);
-    */
     var r = [];
     var g = [];
     var b = [];
@@ -246,23 +221,28 @@ photoShop.prototype.histogram= function (){
 
 }
 
+photoShop.prototype.cumulativeDistribution = function(imgData, cdf) {
+    for(var i=0; i<imgData.data.length; i+=4) {
+        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
+        cdf[average] += 1;
+    }
+    var min = cdf[0];
+    for (var i = 1; i < cdf.length; i++) {
+        if(min == 0 && cdf[i] > 0)
+            min = cdf[i];
+        cdf[i] = cdf[i] + cdf[i-1];
+    }
+    return min;
+}
+
 photoShop.prototype.histogramEqGlobal= function(){
     preview = photo.getPreview();
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     var x = [];
     var cdf = new Array(255).fill(0);
-    var min = 255;
-    for(var i=0; i<imgData.data.length; i+=4) {
-        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
-        //x[i] = average;
-        cdf[average] += 1; 
-        if (average < min)
-            min = average;
-    }
-    for (var i = 1; i < cdf.length; i++) {
-        cdf[i] = cdf[i] + cdf[i-1];
-    }
+    var min = photo.cumulativeDistribution(imgData, cdf);
+    
     for(var i=0; i<imgData.data.length; i+=4) {
         average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
         var intensity = (cdf[average] - min) * 255 / ((imgData.data.length / 4) - 1);
@@ -283,9 +263,83 @@ photoShop.prototype.histogramEqGlobal= function(){
     }
     var data = [trace];
     var layout = {barmode: "overlay"};
-    Plotly.newPlot("histogramDiv", data, layout);
+    Plotly.newPlot("histEquaDiv", data, layout);
 }
 
-photoShop.prototype.histogramEqLocal= function(){}
+
+photoShop.prototype.localEqualization = function(x, y, matrix) {
+    var auxMatrix = new Array(3);
+    for(var i=0; i<3; i++) {
+        auxMatrix[i] = new Array(3);
+    }
+    var count = new Map();
+    for(var i=0; i<3; i++) {
+        for(var j=0; j<3; j++) {
+            var intensity = 0;
+            if(x+(i-1)>0 && x+(i-1)<preview.height-1 && y+(j-1)>0 && y+(j-1)<preview.width-1)
+                intensity = matrix[x+i-1][y+j-1];
+            auxMatrix[i][j] = intensity;
+            if(count.has(intensity))
+                count.set(intensity, count.get(intensity)+1);
+            else
+                count.set(intensity, 1);
+        }
+    }
+
+    var keys = Array.from( count.keys() );
+    keys.sort();
+    var mapDistrib = new Map();
+    mapDistrib.set(keys[0], count.get(keys[0]));
+    for(var i=1; i<keys.length; i++){
+        mapDistrib.set(keys[i], count.get(keys[0])+mapDistrib.get(keys[i-1]));
+    }
+
+    var average = auxMatrix[1][1];
+    var intensity = (mapDistrib.get(average) - mapDistrib.get(keys[0])) * 255 / 8;
+    matrix[x][y] = intensity;
+}
+
+photoShop.prototype.histogramEqLocal= function(){
+    preview = photo.getPreview();
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
+    console.log(preview.width + "  " + preview.height);
+
+    var intensityMatrix = new Array(preview.height);
+    for(var i=0; i<intensityMatrix.length; i++){
+        intensityMatrix[i] = new Array(preview.width);
+    }
+    for(var x=0; x<preview.height; x++) {
+        for(var y=0; y<preview.width; y++) {
+            var pos = ((x * preview.width) + y) * 4;
+            var average = parseInt((imgData.data[pos] + imgData.data[pos+1] + imgData.data[pos+2])/3);
+            intensityMatrix[x][y] = average;
+        }
+    }
+
+    var v = [];
+    for(var x=0; x<preview.height-1; x++) {
+        for(var y=0; y<preview.width-1; y++) {
+            photo.localEqualization(x,y,intensityMatrix);
+            var pos = ((x * preview.width) + y) * 4;
+            imgData.data[pos] = intensityMatrix[x][y];
+            imgData.data[pos+1] = intensityMatrix[x][y];
+            imgData.data[pos+2] = intensityMatrix[x][y];
+            v[pos] = intensityMatrix[x][y]
+        }
+    }
+    ctxt.putImageData(imgData,0,0);
+    var trace = {
+        x: v,
+        type: "histogram",
+        opacity: 0.5,
+        marker: {
+            color: 'green',
+        }
+    }
+    var data = [trace];
+    var layout = {barmode: "overlay"};
+    Plotly.newPlot("histLocalEquaDiv", data, layout);
+}
 
 var photo = new photoShop();

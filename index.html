@@ -12,7 +12,7 @@
         
     
             <script src="./js/main.js"></script>
-            <!-- <script src="./string.js"></script> -->
+            <script src="./js/string.js"></script>
             <script src="./js/filters.js"></script>
         </header>
         <head>
@@ -30,7 +30,7 @@
             <div class="col-md-6"> 
                 <div class="jumbotron">
                     <div class="container">
-                        <h1 class="display-3">RaYu</h1>
+                        <h1 class="display-3">Sem nome AINDA</h1>
                         <p>Melhor ferramenta já criada pelo homem e pelo Ramom.</p>
 
                         <hr></hr>
@@ -62,25 +62,25 @@
                                     <button class="btn btn-primary" onclick='photo.piecewise(document.getElementById("twopoints").value)'>Piecewise</button></p>
 
                                     <p><select id='layerOptions'>
-                                    <option value="1">Primeira camada</option>
-                                    <option value="2">Segunda camada</option>
-                                    <option value="3">Terceira camada</option>
-                                    <option value="4">Quarta camada</option>
-                                    <option value="5">Quinta camada</option>
-                                    <option value="6">Sexta camada</option>
-                                    <option value="7">Setima camada</option>
-                                    <option value="8">Oitava camada</option>
+                                    <option value=1>Primeira camada</option>
+                                    <option value=2>Segunda camada</option>
+                                    <option value=3>Terceira camada</option>
+                                    <option value=4>Quarta camada</option>
+                                    <option value=5>Quinta camada</option>
+                                    <option value=6>Sexta camada</option>
+                                    <option value=7>Setima camada</option>
+                                    <option value=8>Oitava camada</option>
                                     </select>
                                     <button class="btn btn-primary" onclick='photo.layer(document.getElementById("layerOptions").value)'>Mostrar camada</button></p>
                                 </div>
                                 <div class="tab-pane" id="2">
-                                            <button class="btn btn-primary" onclick='photo.histogram()'>Histograma</button></p>
-                                    
-                                        <div id="histogramDiv"></div>
-                                        <button class="btn btn-primary" onclick='photo.histogramEqGlobal()'>Equalização Global</button></p>
-                                        <button class="btn btn-primary" onclick='photo.histogramEqLocal()'>Equalização Local</button></p>
-
-                                    </div>
+                                    <button class="btn btn-primary" onclick='photo.histogram()'>Histograma</button></p>
+                                    <div id="histogramDiv"></div></p>
+                                    <button class="btn btn-primary" onclick='photo.histogramEqGlobal()'>Equalização Global</button></p>
+                                    <div id="histEquaDiv"></div></p>
+                                    <button class="btn btn-primary" onclick='photo.histogramEqLocal()'>Equalização Local</button></p>
+                                    <div id="histLocalEquaDiv"></div></p>
+                                </div>
                                 <div class="tab-pane" id="3">
                                     <h3>Ainda sem ferramentas</h3>
                                 </div>
