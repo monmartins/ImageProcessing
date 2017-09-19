@@ -487,81 +487,61 @@ photoShop.prototype.convolution55 = function(linha1,linha2,linha3,linha4,linha5)
 
     ctxt.putImageData(imgData,0,0);
 }
-photoShop.prototype.convolution33 = function(linha1,linha2,linha3){
-        var matrix = [[parseInt(linha1.split(',')[0].split('(')[1]),parseInt(linha1.split(',')[1]),parseInt(linha1.split(',')[2].split(')')[0])],
-        [parseInt(linha2.split(',')[0].split('(')[1]),parseInt(linha2.split(',')[1]),parseInt(linha2.split(',')[2].split(')')[0])],
-        [parseInt(linha3.split(',')[0].split('(')[1]),parseInt(linha3.split(',')[1]),parseInt(linha3.split(',')[2].split(')')[0])]];
-        var div = matrix[0].reduce((x, y) => x + y);
-        div += matrix[1].reduce((x, y) => x + y);
-        div += matrix[2].reduce((x, y) => x + y);
-        preview = photo.getPreview();
-        photo.blackWhite()
-        ctxt = canvas.getContext('2d');
-        ctxt.drawImage(photo.getPreview(), 0 , 0,preview.width, preview.height );
-        var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
 
-        for(var i=0; i<imgData.data.length; i+=4) {
-            var r = i,g=i+1,b=i+2;
-            try{
-                //primeira coluna
-                mr = imgData.data[(r-4)+(-imgData.width*4)] * matrix[0][0]
-                mr += imgData.data[(r-4)]  * matrix[1][0]
-                mr += imgData.data[(r-4)+(imgData.width*4)] * matrix[2][0]
+photoShop.prototype.convolution33 = function(linha1,linha2,linha3,factor){
+    var matrix = [[parseInt(linha1.split(',')[0].split('(')[1]),parseInt(linha1.split(',')[1]),parseInt(linha1.split(',')[2].split(')')[0])],
+                [parseInt(linha2.split(',')[0].split('(')[1]),parseInt(linha2.split(',')[1]),parseInt(linha2.split(',')[2].split(')')[0])],
+                [parseInt(linha3.split(',')[0].split('(')[1]),parseInt(linha3.split(',')[1]),parseInt(linha3.split(',')[2].split(')')[0])]];
 
-                mg = imgData.data[(g-4)+(-imgData.width*4)] * matrix[0][0]
-                mg += imgData.data[g-4] * matrix[1][0]
-                mg += imgData.data[(g-4)+(imgData.width*4)] * matrix[2][0]
+    preview = photo.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(photo.getPreview(), 0 , 0,preview.width, preview.height );
+    var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
 
-                mb = imgData.data[(b-4)+(-imgData.width*4)] * matrix[0][0]
-                mb += imgData.data[b-4]* matrix[1][0]
-                mb += imgData.data[(b-4)+(imgData.width*4)] * matrix[2][0]
+    var auxData = photo.applyConv(preview, matrix, imgData.data, factor);
+    console.log(auxData.length);
 
-                //segunda coluna
-                mr += imgData.data[(r)+(-imgData.width*4)] * matrix[0][1]
-                mr += imgData.data[(r)]  * matrix[1][1]
-                mr += imgData.data[(r)+(imgData.width*4)] * matrix[2][1]
-
-                mg += imgData.data[(g)+(-imgData.width*4)] * matrix[0][1]
-                mg += imgData.data[g] * matrix[1][1]
-                mg += imgData.data[(g)+(imgData.width*4)] * matrix[2][1]
-
-                mb += imgData.data[(b)+(-imgData.width*4)] * matrix[0][1]
-                mb += imgData.data[b]* matrix[1][1]
-                mb += imgData.data[(b)+(imgData.width*4)] * matrix[2][1]
-
-                //terceira coluna
-                mr += imgData.data[(r+4)+(-imgData.width*4)] * matrix[0][2]
-                mr += imgData.data[(r+4)]  * matrix[1][2]
-                mr += imgData.data[(r+4)+(imgData.width*4)] * matrix[2][2]
-
-                mg += imgData.data[(g+4)+(-imgData.width*4)] * matrix[0][2]
-                mg += imgData.data[g+4] * matrix[1][2]
-                mg += imgData.data[(g+4)+(imgData.width*4)] * matrix[2][2]
-
-                mb += imgData.data[(b+4)+(-imgData.width*4)] * matrix[0][2]
-                mb += imgData.data[b+4]* matrix[1][2]
-                mb += imgData.data[(b+4)+(imgData.width*4)] * matrix[2][2]
-                if(isNaN(mr)||isNaN(mg)||isNaN(mb)){
-                }else{
-                    // console.log(div)
-                    imgData.data[r] = mr/div
-                    imgData.data[g] = mg/div
-                    imgData.data[b] = mb/div  
-                }
-            }catch(exp){
-                continue
-            }
+    for(var i=1; i<preview.height-1; i++) {
+        for(var j=1; j<preview.width-1; j++) {
+            var pos = ((i * preview.width) + j) * 4;
+            imgData.data[pos] = auxData[pos];
+            imgData.data[pos+1] = auxData[pos+1];
+            imgData.data[pos+2] = auxData[pos+2];
         }
+    }
 
     ctxt.putImageData(imgData,0,0);
 }
 
+photoShop.prototype.applyConv = function(preview, matrix, data, factor) {
+    var auxData = new Array(data.length);
+    for(var i=1; i<preview.height-1; i++) {
+        for(var j=1; j<preview.width-1; j++) {
+            var intensity = 0;
+            for(var x=0; x<3; x++) {
+                for(var y=0; y<3; y++) {
+                    var relativePos = (((i+x-1) * preview.width) + (j+y-1)) * 4;
+                    var average = parseInt((data[relativePos] + data[relativePos+1] + data[relativePos+2])/3);
+                    intensity += average * matrix[x][y];
+                }
+            }
+            intensity = intensity * factor;
+            var pos = ((i * preview.width) + j) * 4;
+            auxData[pos] = intensity;
+            auxData[pos+1] = intensity;
+            auxData[pos+2] = intensity;
+            auxData[pos+3] = data[pos+3];
+        }
+    }
+    return auxData;
+}
+
 photoShop.prototype.meanFilter = function(){
-    photo.convolution33("(1,1,1)","(1,1,1)","(1,1,1)")
+    photo.convolution33("(1,1,1)","(1,1,1)","(1,1,1)",1/9);
 }
 
 photoShop.prototype.mediumFilter = function(){
-    photo.convolution33("(1,2,1)","(2,4,2)","(1,2,1)")
+    photo.convolution33("(1,2,1)","(2,4,2)","(1,2,1)",1/16);
 }
 
 photoShop.prototype.medianFilter = function(){
@@ -569,6 +549,7 @@ photoShop.prototype.medianFilter = function(){
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    var auxData = new Array(imgData.data.length)
 
     for(var i=1; i<preview.height-1; i++) {
         for(var j=1; j<preview.width-1; j++) {
@@ -584,8 +565,6 @@ photoShop.prototype.medianFilter = function(){
             for(var x=0; x<3; x++) {
                 for(var y=0; y<3; y++) {
                     var relativePos = ((i+x-1) * preview.width + (j+y-1)) * 4
-                    //square[k] = 0;
-                    //if(i+x-1>0 && i+x-1<preview.height && j+y-1>0 && j+y-1<preview.width)
                         square[k] = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
                     k++;
                 }
@@ -596,12 +575,75 @@ photoShop.prototype.medianFilter = function(){
             var mediana = square[4];
 
             //modificar os valores nos pixels
-            imgData.data[pos] = mediana;
-            imgData.data[pos+1] = mediana;
-            imgData.data[pos+2] = mediana;
+            auxData[pos] = mediana;
+            auxData[pos+1] = mediana;
+            auxData[pos+2] = mediana;
         }
-        console.log(square);
     }
+
+    for(var i=1; i<preview.height-1; i++) {
+        for(var j=1; j<preview.width-1; j++) {
+            var pos = ((i * preview.width) + j) * 4;
+            imgData.data[pos] = auxData[pos];
+            imgData.data[pos+1] = auxData[pos+1];
+            imgData.data[pos+2] = auxData[pos+2];
+        }
+    }
+    
     ctxt.putImageData(imgData,0,0);
 }
+
+photoShop.prototype.laplacianFilter = function() {
+    photo.convolution33("(0,-1,0)","(-1,4,-1)","(0,-1,0)", 1);
+}
+
+photoShop.prototype.sobelFilter = function() {
+    preview = photo.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+
+    var matrix1 = [[-1,0,1],[-2,0,2],[-1,0,1]];
+    var matrix2 = [[1,2,1],[0,0,0],[-1,-2,-1]];
+
+    var data1 = photo.applyConv(preview, matrix1, imgData.data, 1);
+    var data2 = photo.applyConv(preview, matrix2, imgData.data, 1);
+
+    for(var i=1; i<preview.height-1; i++) {
+        for(var j=1; j<preview.width-1; j++) {
+            var pos = ((i * preview.width) + j) * 4;
+            imgData.data[pos] = data1[pos] + data2[pos];
+            imgData.data[pos+1] = data1[pos+1] + data2[pos+1];;
+            imgData.data[pos+2] = data1[pos+2] + data2[pos+2];;
+        }
+    }
+
+    ctxt.putImageData(imgData,0,0);
+    
+}
+
+photoShop.prototype.highBoostFilter = function(constant) {
+    if(!constant)
+        constant = 1;
+    preview = photo.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    
+    var matrix = [[1,2,1], [2,4,2], [1,2,1]];
+    var auxData = photo.applyConv(preview, matrix, imgData.data, 1/16);
+
+    for(var i=1; i<preview.height-1; i++) {
+        for(var j=1; j<preview.width-1; j++) {
+            var pos = ((i * preview.width) + j) * 4;
+            imgData.data[pos] = ((2 * imgData.data[pos]) - auxData[pos]) * constant;
+            imgData.data[pos+1] = ((2 * imgData.data[pos+1]) - auxData[pos+1]) * constant;
+            imgData.data[pos+2] = ((2 * imgData.data[pos+2]) - auxData[pos+2]) * constant;
+
+        }
+    }
+
+    ctxt.putImageData(imgData,0,0);
+}
+
 var photo = new photoShop();

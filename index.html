@@ -116,6 +116,10 @@
                                             <p><button class="btn btn-primary" onclick='photo.meanFilter()'>Filtro da Média</button></p>
                                             <p><button class="btn btn-primary" onclick='photo.mediumFilter()'>Filtro da Média Ponderada</button></p>
                                             <p><button class="btn btn-primary" onclick='photo.medianFilter()'>Filtro da Mediana</button></p>
+                                            <p><button class="btn btn-primary" onclick='photo.laplacianFilter()'>Filtro Laplaciano</button></p>
+                                            <p><button class="btn btn-primary" onclick='photo.sobelFilter()'>Filtro de Sobel</button></p>                                            
+                                            <p><input id="constantHB" type="text" placeholder="Constante do High Boost">
+                                    <button class="btn btn-primary" onclick='photo.highBoostFilter(document.getElementById("constantHB").value)'>High Boost</button></p>
                                         </div>
                                     </div>
                                 </div>
