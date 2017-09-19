@@ -8,8 +8,7 @@ photoShop.prototype.set = function(preview){
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
-    
-                ctxt = canvas.getContext('2d');
+    ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
      for (var i=0;i<imgData.data.length;i+=4)
@@ -20,7 +19,7 @@ photoShop.prototype.blackWhite = function(){
         imgData.data[i+1] = average;
         imgData.data[i+2] = average;
       }
-      ctxt.putImageData(imgData,0,0);
+    ctxt.putImageData(imgData,0,0);
 }
 photoShop.prototype.threshold = function(constant){
     if(!constant){
@@ -29,8 +28,7 @@ photoShop.prototype.threshold = function(constant){
     }
     
     preview = photo.getPreview();
-    
-                ctxt = canvas.getContext('2d');
+    ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     // dada uma cor, se a intensidade media dela for maior que a constante, então vira preto, caso contrário branco
@@ -126,9 +124,7 @@ photoShop.prototype.layer= function (layer){
         imgData.data[i+2]=num;
         
     }
-
-     ctxt.putImageData(imgData,0,0);
-    
+    ctxt.putImageData(imgData,0,0);    
 }
 photoShop.prototype.piecewise= function (points){
     if(points){
@@ -293,7 +289,7 @@ photoShop.prototype.localEqualization = function(x, y, matrix) {
     for(var i=0; i<3; i++) {
         for(var j=0; j<3; j++) {
             var intensity = 0;
-            if(x+(i-1)>0 && x+(i-1)<preview.height-1 && y+(j-1)>0 && y+(j-1)<preview.width-1)
+            if(x+i-1>0 && x+i-1<preview.height-1 && y+j-1>0 && y+j-1<preview.width-1)
                 intensity = matrix[x+i-1][y+j-1];
             auxMatrix[i][j] = intensity;
             if(count.has(intensity))
@@ -308,24 +304,25 @@ photoShop.prototype.localEqualization = function(x, y, matrix) {
     var mapDistrib = new Map();
     mapDistrib.set(keys[0], count.get(keys[0]));
     for(var i=1; i<keys.length; i++){
-        mapDistrib.set(keys[i], count.get(keys[0])+mapDistrib.get(keys[i-1]));
+        mapDistrib.set(keys[i], count.get(keys[i])+mapDistrib.get(keys[i-1]));
     }
 
     var average = auxMatrix[1][1];
-    var intensity = (mapDistrib.get(average) - mapDistrib.get(keys[0])) * 255 / 8;
-    matrix[x][y] = intensity;
+    var intensity = (mapDistrib.get(average) - count.get(keys[0])) * 255 / 9;
+    matrix[x][y] = parseInt(intensity);
 }
-
 photoShop.prototype.histogramEqLocal= function(){
     preview = photo.getPreview();
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
-    console.log(preview.width + "  " + preview.height);
 
+    //matriz com a media de intensidades RGB de cada pixel
+    //iniciando a matriz
     var intensityMatrix = new Array(preview.height);
     for(var i=0; i<intensityMatrix.length; i++){
         intensityMatrix[i] = new Array(preview.width);
     }
+    //preenchendo com os valores dos pixels
     for(var x=0; x<preview.height; x++) {
         for(var y=0; y<preview.width; y++) {
             var pos = ((x * preview.width) + y) * 4;
@@ -564,10 +561,47 @@ photoShop.prototype.meanFilter = function(){
 }
 
 photoShop.prototype.mediumFilter = function(){
-    photo.convolution33("(1,1,1)","(1,2,1)","(1,1,1)")
+    photo.convolution33("(1,2,1)","(2,4,2)","(1,2,1)")
 }
 
 photoShop.prototype.medianFilter = function(){
-    photo.convolution33("(0,1,0)","(1,1,1)","(0,1,0)")
+    preview = photo.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+
+    for(var i=1; i<preview.height-1; i++) {
+        for(var j=1; j<preview.width-1; j++) {
+
+            //conversao de posição no array para posição na matriz
+            var pos = ((i * preview.width) + j) * 4;
+            
+            //criando array de 9 posições para toda vizinhaça do pixel
+            var square = new Array(9);
+
+            //preenchendo com os valores dos pixels
+            var k=0;
+            for(var x=0; x<3; x++) {
+                for(var y=0; y<3; y++) {
+                    var relativePos = ((i+x-1) * preview.width + (j+y-1)) * 4
+                    //square[k] = 0;
+                    //if(i+x-1>0 && i+x-1<preview.height && j+y-1>0 && j+y-1<preview.width)
+                        square[k] = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                    k++;
+                }
+            }
+
+            //ordenar o vetor e selecionar o elemento mediano
+            square.sort();
+            var mediana = square[4];
+
+            //modificar os valores nos pixels
+            imgData.data[pos] = mediana;
+            imgData.data[pos+1] = mediana;
+            imgData.data[pos+2] = mediana;
+        }
+        console.log(square);
+    }
+    ctxt.putImageData(imgData,0,0);
 }
 var photo = new photoShop();
