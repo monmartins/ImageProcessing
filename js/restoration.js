@@ -80,7 +80,7 @@ restoration.prototype.geometricMean= function(xy){
     var auxData = new Array(imgData.data.length);
     for(var i=nn; i<preview.height-nn; i++) {
         for(var j=nm; j<preview.width-nm; j++) {
-            var intensity = 0;
+            var intensity = 1;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
                     var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
@@ -166,6 +166,7 @@ restoration.prototype.harmonic= function(xy){
 restoration.prototype.contraharmonic= function(xy,q){
     n = parseInt(xy.split(',')[0].split('(')[1])
     m = parseInt(xy.split(',')[1].split(')')[0])
+    q = parseInt(q)
     factor = 1/(n*m)
     var matrix = [];
     for(var i=0; i<n; i++) {
@@ -185,19 +186,21 @@ restoration.prototype.contraharmonic= function(xy,q){
     var auxData = new Array(imgData.data.length);
     for(var i=nn; i<preview.height-nn; i++) {
         for(var j=nm; j<preview.width-nm; j++) {
-            var intensity = 0;
+            var intensityTwo = 0;
+            var intensityThree = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
                     var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
                     var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensity += average * matrix[x][y];
+                    intensityTwo += Math.pow(average * matrix[x][y],q+1);
+                    intensityThree += Math.pow(average * matrix[x][y],q);
                 }
             }
-            intensity = Math.pow(intensity,q+1)/Math.pow(intensity,q);
+            intensityOne = intensityTwo/intensityThree;
             var pos = ((i * preview.width) + j) * 4;
-            auxData[pos] = intensity;
-            auxData[pos+1] = intensity;
-            auxData[pos+2] = intensity;
+            auxData[pos] = intensityOne;
+            auxData[pos+1] = intensityOne;
+            auxData[pos+2] = intensityOne;
             auxData[pos+3] = imgData.data[pos+3];
         }
     }
