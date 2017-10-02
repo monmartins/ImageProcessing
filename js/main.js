@@ -69,18 +69,13 @@
                 ctx = canvasOri.getContext('2d');
                 ctx.drawImage(previewOri, 0, 0,canvasOri.width, canvasOri.height );
             }
-            // preview.width = canvas.width;
-            // preview.height = canvas.height;
-            // photo.set(preview,canvas);
  
         }
     }
 
     if (image) {
         reader.readAsDataURL(image); //reads the data as a URL
-        console.log('oi')
         readerOri.readAsDataURL(image); //reads the data as a URL
-        console.log('oi')
     } else {
         preview.src = "";
     }

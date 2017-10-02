@@ -3,18 +3,22 @@
              <link rel="stylesheet" href="./css/custom.css" >
             
             
-             <script src="./js/libs/jquey-3.2.1.slim.min.js"></script>
-             <script src="./js/libs/popper.js"></script>
-             <script src="./js/libs/bootstrap.min.js" ></script>
+             <script src="./js/libs/jquey-3.2.1.slim.min.js" type="application/javascript"></script></script>
+             <script src="./js/libs/popper.js" type="application/javascript"></script></script>
+             <script src="./js/libs/bootstrap.min.js" type="application/javascript"></script></script>
+             <script src= "./js/libs/fft.js" type="application/javascript"></script>
             <link rel="stylesheet" href="./css/libs/bootstrap.css">
             
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
     
-            <script src="./js/main.js"></script>
-            <script src="./js/string.js"></script>
-            <script src="./js/filters.js"></script>
+            <script src="./js/main.js" type="application/javascript"></script>
+            <script src="./js/string.js" type="application/javascript"></script>
+            <script src="./js/histogram.js" type="application/javascript"></script>
+            <script src="./js/convolution.js" type="application/javascript"></script>
+            <script src="./js/restoration.js" type="application/javascript"></script>
+            <script src="./js/filters.js" type="application/javascript"></script>
         </header>
         <head>
             <!-- Plotly.js -->
@@ -43,6 +47,7 @@
                                 <a  href="#1" class="btn btn-outline-primary" data-toggle="tab">Filt...</a></li>
                                 <li><a href="#2" class="btn btn-outline-primary" data-toggle="tab">Hist...</a></li>
                                 <li><a href="#3"  class="btn btn-outline-primary" data-toggle="tab">Conv...</a></li>
+                                <li><a href="#4"  class="btn btn-outline-primary" data-toggle="tab">Rest...</a></li>
                             </ul>
                             <div class="tab-content ">
                                 <div class="tab-pane active" id="1">
@@ -77,11 +82,11 @@
                                     <button class="btn btn-primary" onclick='photo.layer(document.getElementById("layerOptions").value)'>Mostrar camada</button></p>
                                 </div>
                                 <div class="tab-pane" id="2">
-                                    <button class="btn btn-primary" onclick='photo.histogram()'>Histograma</button></p>
+                                    <button class="btn btn-primary" onclick='hist.histogram()'>Histograma</button></p>
                                     <div id="histogramDiv"></div></p>
-                                    <button class="btn btn-primary" onclick='photo.histogramEqGlobal()'>Equalização Global</button></p>
+                                    <button class="btn btn-primary" onclick='hist.histogramEqGlobal()'>Equalização Global</button></p>
                                     <div id="histEquaDiv"></div></p>
-                                    <button class="btn btn-primary" onclick='photo.histogramEqLocal()'>Equalização Local</button></p>
+                                    <button class="btn btn-primary" onclick='hist.histogramEqLocal()'>Equalização Local</button></p>
                                     <div id="histLocalEquaDiv"></div></p>
 
                                 </div>
@@ -94,35 +99,55 @@
                                         </ul>
                                         <div class="tab-content ">
                                             <div class="tab-pane active" id="20">
-                                                    <p><input id="linha1" type="text" placeholder="(x,y,z,k,g)"><br>
-                                                    <input id="linha2" type="text" placeholder="(x,y,z,k,g)"><br>
-                                                    <input id="linha3" type="text" placeholder="(x,y,z,k,g)"><br>
-                                                    <input id="linha4" type="text" placeholder="(x,y,z,k,g)"><br>
-                                                    <input id="linha5" type="text" placeholder="(x,y,z,k,g)"><br></p>
-                                                    <button class="btn btn-primary" onclick='photo.convolution55(document.getElementById("linha1").value,
-                                                                                                                document.getElementById("linha2").value,
-                                                                                                                document.getElementById("linha3").value,
-                                                                                                                document.getElementById("linha4").value,
-                                                                                                                document.getElementById("linha5").value)'>Convolução</button></p>
+                                                    <p><input id="line1" type="text" placeholder="(x,y,z,k,g)"><br>
+                                                    <input id="line2" type="text" placeholder="(x,y,z,k,g)"><br>
+                                                    <input id="line3" type="text" placeholder="(x,y,z,k,g)"><br>
+                                                    <input id="line4" type="text" placeholder="(x,y,z,k,g)"><br>
+                                                    <input id="line5" type="text" placeholder="(x,y,z,k,g)"><br>
+                                                    <input id="factor55" type="text" placeholder="Inserir o fator"><br></p>
+                                                    <button class="btn btn-primary" onclick='conv.convolution55(document.getElementById("line1").value,
+                                                                                                                document.getElementById("line2").value,
+                                                                                                                document.getElementById("line3").value,
+                                                                                                                document.getElementById("line4").value,
+                                                                                                                document.getElementById("line5").value,
+                                                                                                                document.getElementById("factor55").value)'>Convolução</button></p>
                                             </div>
                                             <div class="tab-pane" id="21">
-                                                    <p><input id="linha11" type="text" placeholder="(x,y,z)"><br>
-                                                    <input id="linha21" type="text" placeholder="(x,y,z)"><br>
-                                                    <input id="linha31" type="text" placeholder="(x,y,z)"><br></p>
-                                                    <button class="btn btn-primary" onclick='photo.convolution33(document.getElementById("linha11").value,
-                                                                                                                document.getElementById("linha21").value,
-                                                                                                                document.getElementById("linha31").value)'>Convolução</button></p>
+                                                    <p><input id="line11" type="text" placeholder="(x,y,z)"><br>
+                                                    <input id="line21" type="text" placeholder="(x,y,z)"><br>
+                                                    <input id="line31" type="text" placeholder="(x,y,z)"><br>
+                                                    <input id="factor33" type="text" placeholder="Inserir o fator"><br></p>
+                                                    <button class="btn btn-primary" onclick='conv.convolution33(document.getElementById("line11").value,
+                                                                                                                document.getElementById("line21").value,
+                                                                                                                document.getElementById("line31").value,
+                                                                                                                document.getElementById("factor33").value)'>Convolução</button></p>
                                             </div>
-                                            <p><button class="btn btn-primary" onclick='photo.meanFilter()'>Filtro da Média</button></p>
-                                            <p><button class="btn btn-primary" onclick='photo.mediumFilter()'>Filtro da Média Ponderada</button></p>
-                                            <p><button class="btn btn-primary" onclick='photo.medianFilter()'>Filtro da Mediana</button></p>
-                                            <p><button class="btn btn-primary" onclick='photo.laplacianFilter()'>Filtro Laplaciano</button></p>
-                                            <p><button class="btn btn-primary" onclick='photo.sobelFilter()'>Filtro de Sobel</button></p>                                            
+                                            <p><button class="btn btn-primary" onclick='conv.meanFilter()'>Filtro da Média</button></p>
+                                            <p><button class="btn btn-primary" onclick='conv.mediumFilter()'>Filtro da Média Ponderada</button></p>
+                                            <p><button class="btn btn-primary" onclick='conv.medianFilter()'>Filtro da Mediana</button></p>
+                                            <p><button class="btn btn-primary" onclick='conv.laplacianFilter()'>Filtro Laplaciano</button></p>
+                                            <p><button class="btn btn-primary" onclick='conv.sobelFilter()'>Filtro de Sobel</button></p>                                            
                                             <p><input id="constantHB" type="text" placeholder="Constante do High Boost">
-                                    <button class="btn btn-primary" onclick='photo.highBoostFilter(document.getElementById("constantHB").value)'>High Boost</button></p>
+                                    <button class="btn btn-primary" onclick='conv.highBoostFilter(document.getElementById("constantHB").value)'>High Boost</button></p>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="tab-pane" id="4">
+                                    <input id="xyaritmetic" type="text" placeholder="(x,y) Quantidade de linhas(x) e colunas(y)"><br>
+                                    <button class="btn btn-primary" onclick='rest.aritmeticMean(document.getElementById("xyaritmetic").value)'>Média aritmética</button></p>
+                                    <button class="btn btn-primary" onclick='rest.geometricMean(document.getElementById("xyaritmetic").value)'>Média Geométrica</button></p>
+                                    <button class="btn btn-primary" onclick='rest.harmonic(document.getElementById("xyaritmetic").value)'>Média Harmonica</button></p>
+                                    <input id="qorder" type="text" placeholder="1 Será a ordem q=1"><br>
+                                    <button class="btn btn-primary" onclick='rest.contraharmonic(document.getElementById("xyaritmetic").value,document.getElementById("qorder").value)'>Média Contraharmoniza</button></p>
+                                    <button class="btn btn-primary" onclick='rest.median(document.getElementById("xyaritmetic").value)'>Mediana </button></p>
+                                    <button class="btn btn-primary" onclick='rest.maxandmin(document.getElementById("xyaritmetic").value)'>Máximo e Mínimo</button></p>
+                                    <button class="btn btn-primary" onclick='rest.midpoint(document.getElementById("xyaritmetic").value)'>Ponto Médio</button></p>
+                                    <button class="btn btn-primary" onclick='rest.alphaTrimmed(document.getElementById("xyaritmetic").value)'>Média alfa cortada </button></p>
+                                    <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value)'>Adaptativo de redução de ruído local </button></p>
+                                    <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
+                                </div>
+                                <!-- <div class="tab-pane" id="5">
+                                </div> -->
                             </div>
                         </div>
 
