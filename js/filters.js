@@ -8,7 +8,6 @@ photoShop.prototype.set = function(preview){
     hist.set(preview);
     conv.set(preview);
     rest.set(preview);
-    reduct.set(preview);
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
