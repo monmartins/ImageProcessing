@@ -425,7 +425,7 @@ restoration.prototype.alphaTrimmed= function(xy,d){
                     intensity += average * matrix[x][y];
                 }
             }
-            intensity = (1/(m*n) -d)*intensity;
+            intensity = (1/((m*n) -d))*intensity;
             var pos = ((i * preview.width) + j) * 4;
             auxData[pos] = intensity;
             auxData[pos+1] = intensity;
@@ -521,7 +521,7 @@ restoration.prototype.adaptiveMedian= function(xy){
     for(var i=nn; i<preview.height-nn; i++) {
         for(var j=nm; j<preview.width-nm; j++) {
             var intensity = 0;
-            var arrayintensity = [];
+            var arrayintensity = new Array();
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
                     var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;

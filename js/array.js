@@ -1,8 +1,8 @@
-this.prototype.max = function() {
+Array.prototype.max = function() {
 return Math.max.apply(null, this);
 };
 
-this.prototype.min = function() {
+Array.prototype.min = function() {
 return Math.min.apply(null, this);
 };
 
@@ -19,16 +19,9 @@ Array.prototype.sum = function() {
 };
 
 Array.prototype.mean = function() {
-    return arr.sum(this) / this.length;
+    return this.sum() / this.length;
 };
 
-Array.prototype.median = function() {
-    this.sort(function(a, b) {
-        return a - b;
-    });
-    var mid = this.length / 2;
-    return mid % 1 ? this[mid - 0.5]  = (this[mid - 1] + this[mid]) / 2;
-};
 
 Array.prototype.modes = function() {
     if (!this.length) return [];
