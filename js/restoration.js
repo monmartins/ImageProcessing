@@ -478,6 +478,8 @@ restoration.prototype.adaptiveLocal= function(xy){
             }
             variance = arrayintensity.variance()
             ml = arrayintensity.mean()
+
+            
             intensity = Math.pow(intensity,q+1)/Math.pow(intensity,q);
             var pos = ((i * preview.width) + j) * 4;
             auxData[pos] = intensity;
