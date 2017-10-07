@@ -109,6 +109,9 @@
                                     <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value)'>Adaptativo de redução de ruído local </button>
                                     <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
                                 </div>
+                                <div class="tab-pane" id="5">
+                                    <button class="btn btn-primary" onclick='reduct.imageReduction()'>Redução</button></p>
+                                </div>
                                 <div class="tab-pane" id="3">
                                     <div id="exTab23" class="container">	
                                         <ul class="nav nav-tabs">
@@ -154,26 +157,12 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane" id="4">
-                                    <input id="xyaritmetic" type="text" placeholder="(x,y) Quantidade de linhas(x) e colunas(y)"><br>
-                                    <button class="btn btn-primary" onclick='rest.aritmeticMean(document.getElementById("xyaritmetic").value)'>Média aritmética</button></p>
-                                    <button class="btn btn-primary" onclick='rest.geometricMean(document.getElementById("xyaritmetic").value)'>Média Geométrica</button></p>
-                                    <button class="btn btn-primary" onclick='rest.harmonic(document.getElementById("xyaritmetic").value)'>Média Harmonica</button></p>
-                                    <input id="qorder" type="text" placeholder="1 Será a ordem q=1"><br>
-                                    <button class="btn btn-primary" onclick='rest.contraharmonic(document.getElementById("xyaritmetic").value,document.getElementById("qorder").value)'>Média Contraharmoniza</button></p>
-                                    <button class="btn btn-primary" onclick='rest.median(document.getElementById("xyaritmetic").value)'>Mediana </button></p>
-                                    <button class="btn btn-primary" onclick='rest.max(document.getElementById("xyaritmetic").value)'>Máximo</button></p>
-                                    <button class="btn btn-primary" onclick='rest.min(document.getElementById("xyaritmetic").value)'>Mínimo</button></p>
-                                    <button class="btn btn-primary" onclick='rest.midpoint(document.getElementById("xyaritmetic").value)'>Ponto Médio</button></p>
-                                    <input id="constd" type="text" placeholder="Constante d"><br>
-                                    <button class="btn btn-primary" onclick='rest.alphaTrimmed(document.getElementById("xyaritmetic").value,document.getElementById("constd").value)'>Média alfa cortada </button></p>
-                                    <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value)'>Adaptativo de redução de ruído local </button></p>
-                                    <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
-                                </div>
 
-                                <div class="tab-pane" id="5">
+
+
+                                <!-- <div class="tab-pane" id="5">
                                     <button class="btn btn-primary" onclick='reduct.imageReduction()'>Redução</button></p>
-                                </div>
+                                </div> -->
 
                             </div>
                         </div>

@@ -167,7 +167,6 @@ restoration.prototype.contraharmonic= function(xy,q){
     n = parseInt(xy.split(',')[0].split('(')[1])
     m = parseInt(xy.split(',')[1].split(')')[0])
     q = parseInt(q)
-    factor = 1/(n*m)
     var matrix = [];
     for(var i=0; i<n; i++) {
         matrix[i] = [];
@@ -192,11 +191,12 @@ restoration.prototype.contraharmonic= function(xy,q){
                 for(var y=0; y<m; y++) {
                     var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
                     var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensityTwo += Math.pow(average * matrix[x][y],q+1);
-                    intensityThree += Math.pow(average * matrix[x][y],q);
+                    elementQ = Math.pow(average,q);
+                    intensityThree += elementQ;
+                    intensityTwo += average*elementQ;
                 }
             }
-            intensityOne = intensityTwo/intensityThree;
+            intensityOne = (intensityTwo/intensityThree);
             var pos = ((i * preview.width) + j) * 4;
             auxData[pos] = intensityOne;
             auxData[pos+1] = intensityOne;
@@ -469,18 +469,27 @@ restoration.prototype.adaptiveLocal= function(xy){
         for(var j=nm; j<preview.width-nm; j++) {
             var intensity = 0;
             var arrayintensity = [];
+            var sumq = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
                     var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
                     var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
                     arrayintensity.push(average * matrix[x][y]);
+                    sumq += (Math.pow(average * matrix[x][y],2));
                 }
             }
-            variance = arrayintensity.variance()
-            ml = arrayintensity.mean()
+            var ml =parseFloat(arrayintensity.sum()/Math.pow(arrayintensity.length,2));
+            var div = parseFloat(sumq/Math.pow(arrayintensity.length,2));
+            var variance = parseFloat((div - Math.pow(ml,2)));
+            var relativePosZ = (((i) * preview.width) + (j)) * 4;
+            var averageIntensity = parseInt((imgData.data[relativePosZ] + imgData.data[relativePosZ+1] + imgData.data[relativePosZ+2])/3);
+            var a = 1000/variance;
+            intensity = (averageIntensity - ml);
+            intensity = intensity*a
+            intensity = averageIntensity - intensity/100
 
-            
-            intensity = Math.pow(intensity,q+1)/Math.pow(intensity,q);
+
+
             var pos = ((i * preview.width) + j) * 4;
             auxData[pos] = intensity;
             auxData[pos+1] = intensity;
@@ -497,7 +506,7 @@ restoration.prototype.adaptiveLocal= function(xy){
             imgData.data[pos+2] = auxData[pos+2];
         }
     }
-
+    console.log("done")
     ctxt.putImageData(imgData,0,0);
 }
 restoration.prototype.adaptiveMedian= function(xy){

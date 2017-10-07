@@ -31,7 +31,6 @@ reduction.prototype.imageReduction = function(mean=false) {
     		new_imgData.data[auxPos++] = data[pos+1];
     		new_imgData.data[auxPos++] = data[pos+2];
     		new_imgData.data[auxPos++] = data[pos+3];
-    		console.log(auxPos);
         }
     }
 

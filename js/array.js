@@ -46,10 +46,12 @@ Array.prototype.modes = function() {
 };
 
 Array.prototype.variance = function() {
-    var mean = arr.mean(this);
-    return arr.mean(this.map(function(num) {
-        return Math.pow(num - mean, 2);
-    }));
+    var mean = this.mean(this);
+    var array = new Array(0);
+    for(i=0;i<this.length;i++){
+        array.push(Math.pow((this[i] - mean),2));
+    }
+    return array.mean();
 };
 
 Array.prototype.standardDeviation = function() {
