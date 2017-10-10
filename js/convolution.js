@@ -172,7 +172,7 @@ convolution.prototype.medianFilter = function(){
 }
 
 convolution.prototype.laplacianFilter = function() {
-conv.convolution33("(0,-1,0)","(-1,4,-1)","(0,-1,0)", 1);
+    conv.convolution33("(0,-1,0)","(-1,4,-1)","(0,-1,0)", 1);
 }
 
 convolution.prototype.sobelFilter = function() {

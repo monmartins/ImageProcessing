@@ -9,6 +9,8 @@ photoShop.prototype.set = function(preview){
     conv.set(preview);
     rest.set(preview);
     reduct.set(preview);
+    col.set(preview);
+    ps.set(preview);
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();

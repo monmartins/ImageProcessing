@@ -12,7 +12,7 @@
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
-    
+            
             <script src="./js/main.js" type="application/javascript"></script>
             <script src="./js/array.js" type="application/javascript"></script>
             <script src="./js/string.js" type="application/javascript"></script>
@@ -20,7 +20,11 @@
             <script src="./js/convolution.js" type="application/javascript"></script>
             <script src="./js/restoration.js" type="application/javascript"></script>
             <script src="./js/reduction.js" type="application/javascript"></script>
+            <script src="./js/pass.js" type="application/javascript"></script>
+            <script src="./js/color.js" type="application/javascript"></script>
             <script src="./js/filters.js" type="application/javascript"></script>
+
+
         </header>
         <head>
             <!-- Plotly.js -->
@@ -46,11 +50,12 @@
                         <div id="exTab2" class="container">	
                             <ul class="nav nav-tabs">
                                 <li class="active">
-                                <a  href="#1" class="btn btn-outline-primary" data-toggle="tab">Filt...</a></li>
-                                <li><a href="#2" class="btn btn-outline-primary" data-toggle="tab">Hist...</a></li>
-                                <li><a href="#3"  class="btn btn-outline-primary" data-toggle="tab">Conv...</a></li>
-                                <li><a href="#4"  class="btn btn-outline-primary" data-toggle="tab">Rest...</a></li>
-                                <li><a href="#5"  class="btn btn-outline-primary" data-toggle="tab">Redu...</a></li>
+                                <a  href="#1" class="btn btn-outline-primary" data-toggle="tab">Filt.</a></li>
+                                <li><a href="#2" class="btn btn-outline-primary" data-toggle="tab">Hist.</a></li>
+                                <li><a href="#3"  class="btn btn-outline-primary" data-toggle="tab">Conv.</a></li>
+                                <li><a href="#4"  class="btn btn-outline-primary" data-toggle="tab">Rest.</a></li>
+                                <li><a href="#5"  class="btn btn-outline-primary" data-toggle="tab">Redu.</a></li>
+                                <li><a href="#6"  class="btn btn-outline-primary" data-toggle="tab">Pass.</a></li>
                             </ul>
                             <div class="tab-content ">
                                 <div class="tab-pane active" id="1">
@@ -113,6 +118,13 @@
                                    </p>
                                     <button class="btn btn-primary" onclick='reduct.imageReduction(2,false)'>Redução</button></p>
                                     <button class="btn btn-primary" onclick='reduct.imageReduction(2, true)'>Redução usando Média</button></p>
+                                </div>
+                                <div class="tab-pane" id="6">
+                                   </p>
+                                    <button class="btn btn-primary" onclick='ps.lowPass()'>Passa Baixa</button></p>
+                                    <button class="btn btn-primary" onclick='ps.highPass()'>Passa Alta</button></p>
+                                    <button class="btn btn-primary" onclick='ps.bandPass()'>Passa Faixa</button></p>
+                                    <button class="btn btn-primary" onclick='ps.bandReject()'>Rejeita Faixa</button></p>
                                 </div>
                                 <div class="tab-pane" id="3">
                                     <div id="exTab23" class="container">	
