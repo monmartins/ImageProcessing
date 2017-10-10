@@ -111,7 +111,8 @@
                                     <button class="btn btn-primary" onclick='rest.midpoint(document.getElementById("xyaritmetic").value)'>Ponto Médio</button></p>
                                     <input id="constd" type="text" placeholder="Constante d"><br>
                                     <button class="btn btn-primary" onclick='rest.alphaTrimmed(document.getElementById("xyaritmetic").value,document.getElementById("constd").value)'>Média alfa cortada </button></p>
-                                    <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value)'>Adaptativo de redução de ruído local </button>
+                                    <input id="constlocaladaptative" type="text" placeholder="Variância q"><br>
+                                    <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value,document.getElementById("constlocaladaptative").value)'>Adaptativo de redução de ruído local </button>
                                     <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
                                 </div>
                                 <div class="tab-pane" id="5">

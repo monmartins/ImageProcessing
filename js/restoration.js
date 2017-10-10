@@ -1,5 +1,8 @@
 function restoration(){
 }
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
 restoration.prototype.getPreview = function(){
     return this._preview;
 }
@@ -17,8 +20,6 @@ restoration.prototype.aritmeticMean= function(xy){
             matrix[i][j] = 1;
         }
     }
-    nn = Math.round(Math.sqrt(n));
-    nm = Math.round(Math.sqrt(m));
     preview = rest.getPreview();
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(conv.getPreview(), 0 , 0,preview.width, preview.height );
@@ -26,14 +27,19 @@ restoration.prototype.aritmeticMean= function(xy){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensity += average * matrix[x][y];
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        intensity += average * matrix[x][y];
+                    }else{
+                        average = 175
+                        intensity += average * matrix[x][y];
+                    }
                 }
             }
             intensity = intensity * factor;
@@ -61,7 +67,6 @@ restoration.prototype.aritmeticMean= function(xy){
 restoration.prototype.geometricMean= function(xy){
     n = parseInt(xy.split(',')[0].split('(')[1])
     m = parseInt(xy.split(',')[1].split(')')[0])
-    factor = 1/(n*m)
     var matrix = [];
     for(var i=0; i<n; i++) {
         matrix[i] = [];
@@ -69,8 +74,6 @@ restoration.prototype.geometricMean= function(xy){
             matrix[i][j] = 1;
         }
     }
-    nn = Math.round(Math.sqrt(n));
-    nm = Math.round(Math.sqrt(m));
     preview = rest.getPreview();
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(conv.getPreview(), 0 , 0,preview.width, preview.height );
@@ -78,27 +81,38 @@ restoration.prototype.geometricMean= function(xy){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 1;
+            factor = 1/(n*m);
+            nn = n;
+            nm = m;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensity *= average * matrix[x][y];
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        intensity *= average * matrix[x][y];
+                    }else{
+                        average = 175
+                        intensity *= average * matrix[x][y];
+                    }
+                   
                 }
             }
-            intensity = Math.pow(intensity,factor);
-            var pos = ((i * preview.width) + j) * 4;
-            auxData[pos] = intensity;
-            auxData[pos+1] = intensity;
-            auxData[pos+2] = intensity;
-            auxData[pos+3] = imgData.data[pos+3];
+            if(!isNaN(intensity) && intensity > 0 && isNumeric(intensity)){
+                var pos = ((i * preview.width) + j) * 4;
+                intensity = Math.pow(intensity,factor);
+                auxData[pos] = intensity;
+                auxData[pos+1] = intensity;
+                auxData[pos+2] = intensity;
+                auxData[pos+3] = imgData.data[pos+3];
+            }
         }
     }
 
-    for(var i=1; i<preview.height-1; i++) {
-        for(var j=1; j<preview.width-1; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var pos = ((i * preview.width) + j) * 4;
             imgData.data[pos] = auxData[pos];
             imgData.data[pos+1] = auxData[pos+1];
@@ -130,14 +144,19 @@ restoration.prototype.harmonic= function(xy){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensity += 1/(average * matrix[x][y]);
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        intensity += 1/(average * matrix[x][y]);
+                    }else{
+                        average = 175
+                        intensity += 1/(average * matrix[x][y]);
+                    }
                 }
             }
             intensity = factor/intensity;
@@ -183,17 +202,24 @@ restoration.prototype.contraharmonic= function(xy,q){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensityTwo = 0;
             var intensityThree = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    elementQ = Math.pow(average,q);
-                    intensityThree += elementQ;
-                    intensityTwo += average*elementQ;
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        elementQ = Math.pow(average,q);
+                        intensityThree += elementQ;
+                        intensityTwo += average*elementQ;
+                    }else{
+                        average = 175;
+                        elementQ = Math.pow(average,q);
+                        intensityThree += elementQ;
+                        intensityTwo += average*elementQ;
+                    }
                 }
             }
             intensityOne = (intensityTwo/intensityThree);
@@ -238,14 +264,19 @@ restoration.prototype.median= function(xy){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensity += average * matrix[x][y];
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        intensity += average * matrix[x][y];
+                    }else{
+                        var average = 175;
+                        intensity += average * matrix[x][y];                    
+                    }
                 }
             }
             intensity = intensity/(n*m)
@@ -288,15 +319,21 @@ restoration.prototype.max= function(xy,callback){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             var arrayintensity = [];
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    arrayintensity.push(average * matrix[x][y]);
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        arrayintensity.push(average * matrix[x][y]);
+                    }else{ 
+                        var average = 175;
+                        arrayintensity.push(average * matrix[x][y]);
+
+                    }
                 }
             }
             intensity = arrayintensity.max();
@@ -340,15 +377,21 @@ restoration.prototype.min= function(xy,callback){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             var arrayintensity = [];
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    arrayintensity.push(average * matrix[x][y]);
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        arrayintensity.push(average * matrix[x][y]);
+                    }else{ 
+                        var average = 175;
+                        arrayintensity.push(average * matrix[x][y]);
+
+                    }
                 }
             }
             intensity = arrayintensity.min();
@@ -415,14 +458,20 @@ restoration.prototype.alphaTrimmed= function(xy,d){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    
+
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensity += average * matrix[x][y];
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        intensity += average * matrix[x][y];
+                    }else{
+                        intensity += 175 * matrix[x][y];                      
+                    }
                 }
             }
             intensity = (1/((m*n) -d))*intensity;
@@ -445,7 +494,7 @@ restoration.prototype.alphaTrimmed= function(xy,d){
 
     ctxt.putImageData(imgData,0,0);
 }
-restoration.prototype.adaptiveLocal= function(xy){
+restoration.prototype.adaptiveLocal= function(xy,q){
     n = parseInt(xy.split(',')[0].split('(')[1])
     m = parseInt(xy.split(',')[1].split(')')[0])
     factor = 1/(n*m)
@@ -465,17 +514,24 @@ restoration.prototype.adaptiveLocal= function(xy){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             var arrayintensity = [];
             var sumq = 0;
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    arrayintensity.push(average * matrix[x][y]);
-                    sumq += (Math.pow(average * matrix[x][y],2));
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        arrayintensity.push(average * matrix[x][y]);
+                        sumq += (Math.pow(average * matrix[x][y],2));
+                    }else{
+                        var average = 175;
+                        arrayintensity.push(average * matrix[x][y]);
+                        sumq += (Math.pow(average * matrix[x][y],2));
+
+                    }
                 }
             }
             var ml =parseFloat(arrayintensity.sum()/Math.pow(arrayintensity.length,2));
@@ -483,10 +539,10 @@ restoration.prototype.adaptiveLocal= function(xy){
             var variance = parseFloat((div - Math.pow(ml,2)));
             var relativePosZ = (((i) * preview.width) + (j)) * 4;
             var averageIntensity = parseInt((imgData.data[relativePosZ] + imgData.data[relativePosZ+1] + imgData.data[relativePosZ+2])/3);
-            var a = 1000/variance;
+            var a = q/variance;
             intensity = (averageIntensity - ml);
             intensity = intensity*a
-            intensity = averageIntensity - intensity/100
+            intensity = averageIntensity - intensity/(q/10)
 
 
 
@@ -529,15 +585,20 @@ restoration.prototype.adaptiveMedian= function(xy){
 
 
     var auxData = new Array(imgData.data.length);
-    for(var i=nn; i<preview.height-nn; i++) {
-        for(var j=nm; j<preview.width-nm; j++) {
+
+    for(var i=0; i<preview.height; i++) {
+        for(var j=0; j<preview.width; j++) {
             var intensity = 0;
             var arrayintensity = new Array();
             for(var x=0; x<n; x++) {
                 for(var y=0; y<m; y++) {
-                    var relativePos = (((i+x-nn) * preview.width) + (j+y-nm)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    arrayintensity.push(average * matrix[x][y]);
+                    var relativePos = (((i+x) * preview.width) + (j+y)) * 4;
+                    if(relativePos>0 && relativePos<imgData.data.length){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        arrayintensity.push(average * matrix[x][y]);
+                    }else{
+                        arrayintensity.push(175 * matrix[x][y]);                        
+                    }
                 }
             }
             zmin=arrayintensity.min();
