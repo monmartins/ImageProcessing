@@ -26,7 +26,7 @@ pass.prototype.bandPass = function(){
 	var aux = conv.applyConv(preview, low, imgData.data, 1/9);
 
 	var hig = [[0,-1,0],[-1,4,-1],[0,-1,0]];
-	aux = conv.applyConv(preview, hig, aux, 1);
+	var aux = conv.applyConv(preview, hig, aux, 1);
 
 	for(var i=1; i<preview.height-1; i++) {
         for(var j=1; j<preview.width-1; j++) {
