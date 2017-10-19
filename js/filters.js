@@ -11,6 +11,7 @@ photoShop.prototype.set = function(preview){
     reduct.set(preview);
     col.set(preview);
     ps.set(preview);
+    proccol.set(preview);
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();

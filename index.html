@@ -22,6 +22,7 @@
             <script src="./js/reduction.js" type="application/javascript"></script>
             <script src="./js/pass.js" type="application/javascript"></script>
             <script src="./js/color.js" type="application/javascript"></script>
+            <script src="./js/processingcolors.js" type="application/javascript"></script>
             <script src="./js/filters.js" type="application/javascript"></script>
 
 
@@ -56,6 +57,7 @@
                                 <li><a href="#4"  class="btn btn-outline-primary" data-toggle="tab">Rest.</a></li>
                                 <li><a href="#5"  class="btn btn-outline-primary" data-toggle="tab">Redu.</a></li>
                                 <li><a href="#6"  class="btn btn-outline-primary" data-toggle="tab">Pass.</a></li>
+                                <li><a href="#7"  class="btn btn-outline-primary" data-toggle="tab">Proc. Cores.</a></li>
                             </ul>
                             <div class="tab-content ">
                                 <div class="tab-pane active" id="1">
@@ -127,6 +129,20 @@
                                     <button class="btn btn-primary" onclick='ps.bandPass()'>Passa Faixa</button></p>
                                     <button class="btn btn-primary" onclick='ps.bandReject()'>Rejeita Faixa</button></p>
                                 </div>
+                                <div class="tab-pane" id="7">
+                                    </p>
+                                    <input id="brightness" type="text" size=35 placeholder="Digite a quantidade de brilho de 0 a 255"><br>
+                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Brilho</button></p>
+                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Filtro da média</button></p>
+                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Filtro laplaciano</button></p>
+                                    <input id="colorchroma" type="text" size=35 placeholder="Digite a cor (0,250,80)"><br>
+                                    <input id="radiocolor" type="text" size=35 placeholder="Digite o raio"><br>
+                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Chroma-Key</button></p>
+                                    <input id="constantcorrection" type="text" size=35 placeholder="Constante"><br>
+                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Correção de tonalidade</button></p>
+                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Equalização de Histograma (Colorido)</button></p>
+                                </div>
+
                                 <div class="tab-pane" id="3">
                                     <div id="exTab23" class="container">	
                                         <ul class="nav nav-tabs">
