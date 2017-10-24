@@ -49,7 +49,7 @@ convolution.prototype.convolution55 = function(line1,line2,line3,line4,line5){
     ctxt.putImageData(imgData,0,0);
 }
 
-convolution.prototype.convolution33 = function(line1,line2,line3,factor){
+convolution.prototype.convolution33 = function(line1,line2,line3,factor,boolAverage){
     var matrix = [[parseInt(line1.split(',')[0].split('(')[1]),parseInt(line1.split(',')[1]),parseInt(line1.split(',')[2].split(')')[0])],
                 [parseInt(line2.split(',')[0].split('(')[1]),parseInt(line2.split(',')[1]),parseInt(line2.split(',')[2].split(')')[0])],
                 [parseInt(line3.split(',')[0].split('(')[1]),parseInt(line3.split(',')[1]),parseInt(line3.split(',')[2].split(')')[0])]];
@@ -62,20 +62,40 @@ convolution.prototype.convolution33 = function(line1,line2,line3,factor){
     var auxData = new Array(imgData.data.length);
     for(var i=1; i<preview.height-1; i++) {
         for(var j=1; j<preview.width-1; j++) {
-            var intensity = 0;
+            if(boolAverage){
+                var intensity = 0;
+            }else{
+                var a = 0;
+                var b = 0;
+                var c = 0;
+            }
             for(var x=0; x<3; x++) {
                 for(var y=0; y<3; y++) {
                     var relativePos = (((i+x-1) * preview.width) + (j+y-1)) * 4;
-                    var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
-                    intensity += average * matrix[x][y];
+                    if(boolAverage){
+                        var average = parseInt((imgData.data[relativePos] + imgData.data[relativePos+1] + imgData.data[relativePos+2])/3);
+                        intensity += average * matrix[x][y];
+                    }else{
+                        a += imgData.data[relativePos]* matrix[x][y];
+                        b += imgData.data[relativePos+1]* matrix[x][y];
+                        c += imgData.data[relativePos+2]* matrix[x][y];
+                    }
                 }
             }
-            intensity = intensity * factor;
-            var pos = ((i * preview.width) + j) * 4;
-            auxData[pos] = intensity;
-            auxData[pos+1] = intensity;
-            auxData[pos+2] = intensity;
-            auxData[pos+3] = imgData.data[pos+3];
+            if(boolAverage){
+                intensity = intensity * factor;
+                var pos = ((i * preview.width) + j) * 4;
+                auxData[pos] = intensity;
+                auxData[pos+1] = intensity;
+                auxData[pos+2] = intensity;
+                auxData[pos+3] = imgData.data[pos+3];
+            }else{
+                var pos = ((i * preview.width) + j) * 4;
+                auxData[pos] = a * factor;
+                auxData[pos+1] = b * factor;
+                auxData[pos+2] = c * factor;
+                auxData[pos+3] = imgData.data[pos+3];
+            }
         }
     }
 
@@ -115,11 +135,11 @@ convolution.prototype.applyConv = function(preview, matrix, data, factor) {
 }
 
 convolution.prototype.meanFilter = function(){
-    conv.convolution33("(1,1,1)","(1,1,1)","(1,1,1)",1/9);
+    conv.convolution33("(1,1,1)","(1,1,1)","(1,1,1)",1/9,true);
 }
 
 convolution.prototype.mediumFilter = function(){
-    conv.convolution33("(1,2,1)","(2,4,2)","(1,2,1)",1/16);
+    conv.convolution33("(1,2,1)","(2,4,2)","(1,2,1)",1/16,true);
 }
 
 convolution.prototype.medianFilter = function(){
@@ -172,7 +192,7 @@ convolution.prototype.medianFilter = function(){
 }
 
 convolution.prototype.laplacianFilter = function() {
-    conv.convolution33("(0,-1,0)","(-1,4,-1)","(0,-1,0)", 1);
+    conv.convolution33("(0,-1,0)","(-1,4,-1)","(0,-1,0)", 1,true);
 }
 
 convolution.prototype.sobelFilter = function() {

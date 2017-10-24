@@ -23,10 +23,12 @@ processingcolors.prototype.brightness = function(bright){
       }
       ctxt.putImageData(imgData,0,0);
 }
-processingcolors.prototype.medianfilter = function(bright){
+processingcolors.prototype.medianfilter = function(){
+    conv.convolution33("(1,1,1)","(1,1,1)","(1,1,1)",1/9,false);
     
 }
 processingcolors.prototype.laplacian = function(bright){
+    conv.convolution33("(0,-1,0)","(-1,4,-1)","(0,-1,0)", 1,false);
     
 }
 processingcolors.prototype.chromakey = function(color,colorchroma,radio){
