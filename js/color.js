@@ -46,33 +46,9 @@ color.prototype.RGBtoHSI = function(R, G, B){
 	S = (max-min)/max
 
 	return [H, S, I]
-
-	/*let r = R/255;
-	let g = G/255;
-	let b = B/255;
-
-	let H = 0;
-	let S = 0;
-	let I = (r+g+b)/3;
-	
-	let w = (0.5*((r-g)+(r-b))) / Math.pow((Math.pow(r-g, 2) + (r-b)*(g-b)),1/2)
-	if (w > 1){
-		w = 1;
-	}
-	if (w < -1){
-		w = -1;
-	}
-	H = Math.acos(w);
-	if (b > g){
-		H = 2*3.1415 - H;
-	} 
-	S = 1 - (3 * Math.min(r, g, b) / (r + g + b + 0.00001)) ;	
-
-	return [H, S, I];*/
 }
 
 color.prototype.HSItoRGB = function(H, S, I){
-
 	let R = 0;
 	let G = 0;
 	let B = 0;
@@ -117,46 +93,7 @@ color.prototype.HSItoRGB = function(H, S, I){
 			B = q
 		}
 	}
-
 	return [R*255, G*255, B*255]
-	/*let R = 0;
-	let G = 0;
-	let B = 0;
-
-	if (S > 1)
-		S = 1;
-	if (I > 1)
-		I = 1;
-	if (S == 0) {
-		R = I;
-		G = I;
-		B = I;
-	} else {
-		if ((H >= 0) && (H < 2*Math.PI/3)) {
-			B = (1 - S) / 3;
-			R = (1 + S * Math.cos(H) / Math.cos(Math.PI/3 - H))/3;
-			G = 1 - R - B;
-		} else if ((H >= 2*Math.PI/3) && (H < 4*Math.PI/3)) {
-			H = H - 2 * Math.PI / 3;
-			R = (1 - S) / 3;
-			G = (1 + S * Math.cos(H) / Math.cos(Math.PI/3 - H))/3;
-			B = 1 - R - G;
-		} else if ((H >= 4*Math.PI/3) && (H < 2*Math.PI)) {
-			H = H - 4 * Math.PI / 3;
-			G = (1 - S) / 3;
-			B = (1 + S * Math.cos(H) / Math.cos(Math.PI/3 - H))/3;
-			R = 1 - B - G;
-		}
-
-		if (R < 0) R = 0; if (G < 0) G = 0;	if (B < 0) B = 0;
-
-		R = 3*I*R; G = 3*I*G; B = 3*I*B;
-
-		if (R > 1) R = 1; if (G > 1) G = 1;	if (B > 1) B = 1;
-	}
-
-	return [R*255, G*255, B*255];*/
-
 }
 
 var col = new color();

@@ -142,8 +142,6 @@ histogram.prototype.HSIGlobalEqualization = function() {
         HSIimgData[i] = HSI[0];
         HSIimgData[i+1] = HSI[1];
         HSIimgData[i+2] = parseInt(HSI[2]*255);
-        //console.log("RGB: "+ imgData.data[i]+" "+imgData.data[i+1]+" "+imgData.data[i+2])
-        //console.log("HSI: "+ HSIimgData[i]+" "+HSIimgData[i+1]+" "+HSIimgData[i+2])
     }
     var cdf = new Array(255).fill(0);
     var min = hist.cumulativeDistributionHSI(imgData, cdf);
@@ -151,7 +149,7 @@ histogram.prototype.HSIGlobalEqualization = function() {
         HSIimgData[i+2] = parseInt((cdf[parseInt(imgData.data[i+2])] - min) * 255 / ((imgData.data.length / 4) - 1));
     }
     for (var i = 0; i < imgData.data.length; i+=4) {
-        var RGB = col.HSItoRGB(HSIimgData[i], HSIimgData[i+1], HSIimgData[i+2])
+        var RGB = col.HSItoRGB(HSIimgData[i], HSIimgData[i+1], HSIimgData[i+2]/255)
         imgData.data[i] = RGB[0];
         imgData.data[i+1] = RGB[1];
         imgData.data[i+2] = RGB[2];
