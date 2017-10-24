@@ -133,13 +133,13 @@
                                     </p>
                                     <input id="brightness" type="text" size=35 placeholder="Digite a quantidade de brilho de 0 a 255"><br>
                                     <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Brilho</button></p>
-                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Filtro da média</button></p>
-                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Filtro laplaciano</button></p>
+                                    <button class="btn btn-primary" onclick='proccol.medianfilter(document.getElementById("brightness").value)'>Filtro da média</button></p>
+                                    <button class="btn btn-primary" onclick='proccol.laplacian(document.getElementById("brightness").value)'>Filtro laplaciano</button></p>
                                     <input id="colorchroma" type="text" size=35 placeholder="Digite a cor (0,250,80)"><br>
                                     <input id="radiocolor" type="text" size=35 placeholder="Digite o raio"><br>
-                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Chroma-Key</button></p>
+                                    <button class="btn btn-primary" onclick='proccol.chromakey(document.getElementById("colorchroma").value,document.getElementById("radiocolor").value)'>Chroma-Key</button></p>
                                     <input id="constantcorrection" type="text" size=35 placeholder="Constante"><br>
-                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Correção de tonalidade</button></p>
+                                    <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("constantcorrection").value)'>Correção de tonalidade</button></p>
                                     <button class="btn btn-primary" onclick='proccol.brightness(document.getElementById("brightness").value)'>Equalização de Histograma (Colorido)</button></p>
                                 </div>
 
