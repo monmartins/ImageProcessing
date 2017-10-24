@@ -56,7 +56,7 @@ photoShop.prototype.threshold = function(constant){
 photoShop.prototype.negative= function(){
     preview = photo.getPreview();
     
-                ctxt = canvas.getContext('2d');// 
+    ctxt = canvas.getContext('2d');// 
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4)
@@ -74,7 +74,7 @@ photoShop.prototype.logTransformation= function(constant){
     }
     preview = photo.getPreview();
     
-                ctxt = canvas.getContext('2d');
+    ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4){
@@ -91,7 +91,7 @@ photoShop.prototype.gamma = function (constant,gamma){
     }
     preview = photo.getPreview();
     
-                ctxt = canvas.getContext('2d');
+    ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4)
@@ -109,7 +109,7 @@ photoShop.prototype.layer= function (layer){
     layer = 7 - layer
     preview = photo.getPreview();
     
-                ctxt = canvas.getContext('2d');
+    ctxt = canvas.getContext('2d');
     ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
     for (var i=0;i<imgData.data.length;i+=4){
@@ -144,8 +144,8 @@ photoShop.prototype.piecewise= function (points){
             if( a >= 0 && a <= 255 && b >= 0 && b <= 255 && c >= 0 && c <= 255 && d >= 0 && d <= 255 && a <= c){
                 preview = photo.getPreview();
                 
-                ctxt = canvas.getContext('2d');
-                ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
                 var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
                  for (var i=0;i<imgData.data.length;i+=4){
                     sum = imgData.data[i] + imgData.data[i+1] + imgData.data[i+2];
@@ -182,7 +182,7 @@ photoShop.prototype.piecewise= function (points){
                     
                 }
             
-                 ctxt.putImageData(imgData,0,0);
+        ctxt.putImageData(imgData,0,0);
 
             }else{
                 return;
