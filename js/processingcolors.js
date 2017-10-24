@@ -30,6 +30,25 @@ processingcolors.prototype.brightness = function(bright){
       }
       ctxt.putImageData(imgData,0,0);
 }
+
+processingcolors.prototype.HSIbrightness = function(bright){
+    preview = proccol.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(proccol.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
+    for (var i=0;i<imgData.data.length;i+=4){
+        let HSI = col.RGBtoHSI(imgData.data[i], imgData.data[i+1], imgData.data[i+2])
+        HSI[2] = HSI[2]*bright
+        if(HSI[2] > 1)
+            HSI[2] = 1
+        let RGB = col.HSItoRGB(HSI[0], HSI[1], HSI[2])
+        imgData.data[i] = RGB[0]
+        imgData.data[i+1] = RGB[1]
+        imgData.data[i+2] = RGB[2]
+    }
+    ctxt.putImageData(imgData,0,0);
+}
+
 processingcolors.prototype.medianfilter = function(){
     conv.convolution33("(1,1,1)","(1,1,1)","(1,1,1)",1/9,false);
     
