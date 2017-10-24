@@ -8,7 +8,20 @@ processingcolors.prototype.set = function(preview){
     this._preview = preview;
 }
 processingcolors.prototype.brightness = function(bright){
-    
+    preview = proccol.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(proccol.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    for (var i=0;i<imgData.data.length;i+=4)
+      {
+        var b  = [bright*imgData.data[i],bright*imgData.data[i+1],bright*imgData.data[i+2]];
+
+        imgData.data[i] = b[0];
+        imgData.data[i+1] = b[1];
+        imgData.data[i+2] = b[2];
+            
+      }
+      ctxt.putImageData(imgData,0,0);
 }
 processingcolors.prototype.medianfilter = function(bright){
     
@@ -28,7 +41,6 @@ processingcolors.prototype.chromakey = function(color,colorchroma,radio){
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(proccol.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-    // dada uma cor, se a intensidade media dela for maior que a constante, então vira preto, caso contrário branco
     for (var i=0;i<imgData.data.length;i+=4)
       {
         var b  = [imgData.data[i],imgData.data[i+1],imgData.data[i+2]];
