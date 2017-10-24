@@ -23,36 +23,105 @@ color.prototype.CMYtoRGB = function(C, M, Y){
 }
 
 color.prototype.RGBtoHSI = function(R, G, B){
-	R = R/255;
-	G = G/255;
-	B = B/255;
+	let r = R/255
+	let g = G/255
+	let b = B/255
+	let max = Math.max(r,g,b)
+	if(max==0)
+		max = 0.0001
+	let min = Math.min(r,g,b)
+	let H = 0
+	let S = 0
+	let I = max
 
-	let H;
-	let S;
-	let I = (R + G + B) / 3;
-	if (R == G && G == B){
-		H = 0;
-		S = 0;
-	} else {
-		let w = 0.5*(R+G+B) / Math.pow(((R-G)*(R-G) + (R-B)*(G-B)),0.5);
-		if (w > 1)
-			w = 1;
-		if (w < -1)
-			w = -1;
-		H = Math.acos(w);
-		//H = H * (180 / Math.PI);
-		if (B > G)
-			H = 2*Math.PI - H;
-		let S = 1 - (3 / (R + G + B + 0.00001)) * Math.min(R, G, B);	
+	if((max==r)&&(g>=b))
+		H = 60*(g-b)/(max-min)
+	if((max==r)&&(g<b))
+		H = 60*(g-b)/(max-min) + 360
+	if(max==g)
+		H = 60*(b-r)/(max-min) + 120
+	if(max==b)
+		H = 60*(r-g)/(max-min) + 240
+
+	S = (max-min)/max
+
+	return [H, S, I]
+
+	/*let r = R/255;
+	let g = G/255;
+	let b = B/255;
+
+	let H = 0;
+	let S = 0;
+	let I = (r+g+b)/3;
+	
+	let w = (0.5*((r-g)+(r-b))) / Math.pow((Math.pow(r-g, 2) + (r-b)*(g-b)),1/2)
+	if (w > 1){
+		w = 1;
 	}
+	if (w < -1){
+		w = -1;
+	}
+	H = Math.acos(w);
+	if (b > g){
+		H = 2*3.1415 - H;
+	} 
+	S = 1 - (3 * Math.min(r, g, b) / (r + g + b + 0.00001)) ;	
 
-	return [H, S, I];
+	return [H, S, I];*/
 }
 
 color.prototype.HSItoRGB = function(H, S, I){
-	let R;
-	let G;
-	let B;
+
+	let R = 0;
+	let G = 0;
+	let B = 0;
+	if(S==0){
+		R = I
+		G = I
+		B = I
+	}else{
+		let Hi = Math.floor(H/60)%6
+		let f = (H/60)-Hi
+		let p = I*(1-S)
+		let q = I*(1-(f*S))
+		let t = I*(1-((1-f)*S))
+		if(Hi==0){
+			R = I
+			G = t
+			B = p
+		}
+		if(Hi==1){
+			R = q
+			G = I
+			B = p
+		}
+		if(Hi==2){
+			R = p
+			G = I
+			B = t
+		}
+		if(Hi==3){
+			R = p
+			G = q
+			B = I
+		}
+		if(Hi==4){
+			R = t
+			G = p
+			B = I
+		}
+		if(Hi==5){
+			R = I
+			G = p
+			B = q
+		}
+	}
+
+	return [R*255, G*255, B*255]
+	/*let R = 0;
+	let G = 0;
+	let B = 0;
 
 	if (S > 1)
 		S = 1;
@@ -86,7 +155,7 @@ color.prototype.HSItoRGB = function(H, S, I){
 		if (R > 1) R = 1; if (G > 1) G = 1;	if (B > 1) B = 1;
 	}
 
-	return [R*255, G*255, B*255];
+	return [R*255, G*255, B*255];*/
 
 }
 
