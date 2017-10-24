@@ -6,11 +6,8 @@ histogram.prototype.getPreview = function(){
 histogram.prototype.set = function(preview){
     this._preview = preview;
 }
-histogram.prototype.histogram= function (){
-    preview = hist.getPreview();
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(hist.getPreview(), 0, 0,preview.width, preview.height );
-    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+
+histogram.prototype.makeHistogram = function (imgData, div){
     var r = [];
     var g = [];
     var b = [];
@@ -48,16 +45,19 @@ histogram.prototype.histogram= function (){
     }
     var data = [traceR, traceG, traceB];
     var layout = {barmode: "overlay"};
-    Plotly.newPlot("histogramDiv", data, layout);
-
+    Plotly.newPlot(div, data, layout);
 }
 
-histogram.prototype.cumulativeDistribution = function(imgData, cdf) {
-    for(var i=0; i<imgData.data.length; i+=4) {
-        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
-        cdf[average] += 1;
-    }
-    var min = cdf[0];
+
+histogram.prototype.histogram = function (){
+    preview = hist.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(hist.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    hist.makeHistogram(imgData, "histogramDiv");    
+}
+
+histogram.prototype.calculateMin = function(min, cdf) {
     for (var i = 1; i < cdf.length; i++) {
         if(min == 0 && cdf[i] > 0)
             min = cdf[i];
@@ -66,12 +66,38 @@ histogram.prototype.cumulativeDistribution = function(imgData, cdf) {
     return min;
 }
 
+histogram.prototype.cumulativeDistribution = function(imgData, cdf) {
+    for(var i=0; i<imgData.data.length; i+=4) {
+        average = parseInt((imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3);
+        cdf[average] += 1;
+    }
+    return hist.calculateMin(cdf[0], cdf);
+}
+
+histogram.prototype.cumulativeDistributionRGB = function(imgData, cdfRGB) {
+    for(var i=0; i<imgData.data.length; i+=4) {
+        cdfRGB[0][imgData.data[i]] += 1;
+        cdfRGB[1][imgData.data[i+1]] += 1;
+        cdfRGB[2][imgData.data[i+2]] += 1;
+    }
+    var minR = hist.calculateMin(cdfRGB[0][0], cdfRGB[0]);
+    var minG = hist.calculateMin(cdfRGB[1][0], cdfRGB[1]);
+    var minB = hist.calculateMin(cdfRGB[2][0], cdfRGB[2]);
+    return [minR, minG, minB];
+}
+
+histogram.prototype.cumulativeDistributionHSI = function(imgData, cdf) {
+    for(var i=0; i<imgData.data.length; i+=4) {
+        cdf[parseInt(imgData.data[i+2])] += 1;
+    }
+    return hist.calculateMin(cdf[0], cdf);
+}
+
 histogram.prototype.histogramEqGlobal= function(){
     preview = hist.getPreview();
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(hist.getPreview(), 0, 0,preview.width, preview.height );
     var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
-    var x = [];
     var cdf = new Array(255).fill(0);
     var min = hist.cumulativeDistribution(imgData, cdf);
     
@@ -82,22 +108,55 @@ histogram.prototype.histogramEqGlobal= function(){
         imgData.data[i] = intensity;
         imgData.data[i+1] = intensity;
         imgData.data[i+2] = intensity;
-        x[i] = intensity;
     }
     ctxt.putImageData(imgData,0,0);
-    var trace = {
-        x: x,
-        type: "histogram",
-        opacity: 0.5,
-        marker: {
-            color: 'green',
-        }
-    }
-    var data = [trace];
-    var layout = {barmode: "overlay"};
-    Plotly.newPlot("histEquaDiv", data, layout);
+    hist.makeHistogram(imgData, "histEquaDiv");
 }
 
+histogram.prototype.RGBGlobalEqualization = function() {
+    preview = hist.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(hist.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    var cdfR = new Array(255).fill(0);
+    var cdfG = new Array(255).fill(0);
+    var cdfB = new Array(255).fill(0);
+    var min = hist.cumulativeDistributionRGB(imgData, [cdfR, cdfG, cdfB])
+    for(var i=0; i<imgData.data.length; i+=4) {
+        imgData.data[i] = parseInt((cdfR[imgData.data[i]] - min[0]) * 255 / ((imgData.data.length / 4) - 1));
+        imgData.data[i+1] = parseInt((cdfG[imgData.data[i+1]] - min[1]) * 255 / ((imgData.data.length / 4) - 1));
+        imgData.data[i+2] = parseInt((cdfB[imgData.data[i+2]] - min[2]) * 255 / ((imgData.data.length / 4) - 1));
+    }
+    ctxt.putImageData(imgData,0,0);
+    hist.makeHistogram(imgData, "histEqColorDiv");
+}
+
+histogram.prototype.HSIGlobalEqualization = function() {
+    preview = hist.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(hist.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    var HSIimgData = [];
+    for (var i = 0; i < imgData.data.length; i+=4) {
+        var HSI = col.RGBtoHSI(imgData.data[i], imgData.data[i+1], imgData.data[i+2])
+        HSIimgData[i] = HSI[0];
+        HSIimgData[i+1] = HSI[1];
+        HSIimgData[i+2] = parseInt(HSI[2]*255);
+    }
+    var cdf = new Array(255).fill(0);
+    var min = hist.cumulativeDistributionHSI(imgData, cdf);
+    for(var i=0; i<imgData.data.length; i+=4) {
+        HSIimgData[i+2] = parseInt((cdf[parseInt(imgData.data[i+2])] - min) * 255 / ((imgData.data.length / 4) - 1));
+    }
+    for (var i = 0; i < imgData.data.length; i+=4) {
+        var RGB = col.HSItoRGB(HSIimgData[i], HSIimgData[i+1], HSIimgData[i+2]/255)
+        imgData.data[i] = RGB[0];
+        imgData.data[i+1] = RGB[1];
+        imgData.data[i+2] = RGB[2];
+    }
+    ctxt.putImageData(imgData,0,0);
+    hist.makeHistogram(imgData, "histEqColorDiv");
+}
 
 histogram.prototype.localEqualization = function(x, y, matrix) {
     var auxMatrix = new Array(3);
@@ -151,7 +210,6 @@ histogram.prototype.histogramEqLocal= function(){
         }
     }
 
-    var v = [];
     for(var x=0; x<preview.height-1; x++) {
         for(var y=0; y<preview.width-1; y++) {
             hist.localEqualization(x,y,intensityMatrix);
@@ -159,21 +217,11 @@ histogram.prototype.histogramEqLocal= function(){
             imgData.data[pos] = intensityMatrix[x][y];
             imgData.data[pos+1] = intensityMatrix[x][y];
             imgData.data[pos+2] = intensityMatrix[x][y];
-            v[pos] = intensityMatrix[x][y]
         }
     }
     ctxt.putImageData(imgData,0,0);
-    var trace = {
-        x: v,
-        type: "histogram",
-        opacity: 0.5,
-        marker: {
-            color: 'green',
-        }
-    }
-    var data = [trace];
-    var layout = {barmode: "overlay"};
-    Plotly.newPlot("histLocalEquaDiv", data, layout);
+    hist.makeHistogram(imgData, "histLocalEquaDiv")
 }
+
 
 var hist = new histogram();
