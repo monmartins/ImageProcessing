@@ -100,6 +100,9 @@
                                     <div id="histEquaDiv"></div></p>
                                     <button class="btn btn-primary" onclick='hist.histogramEqLocal()'>Equalização Local</button></p>
                                     <div id="histLocalEquaDiv"></div></p>
+                                    <button class="btn btn-primary" onclick='hist.RGBGlobalEqualization()'>Equalização Colorida</button></p>
+                                    <div id="histEqColorDiv"
+                                    ></div></p>
 
                                 </div>
                                 <div class="tab-pane" id="4">
@@ -144,7 +147,8 @@
                                     <input id="radiocolor" type="text" size=35 placeholder="Digite o raio"><br>
                                     <button class="btn btn-primary" onclick='proccol.chromakey(document.getElementById("colorimage").value,document.getElementById("trchroma").value,document.getElementById("radiocolor").value)'>Chroma-Key</button></p>
                                     <p><input id="constantcorrection" type="text" size=35 placeholder="Constante"><br>
-                                    <input id="gammacorrection" type="float" placeholder="Correction">
+                                    <input id="gammacorrection" type="float" placeh
+                                    older="Correction">
                                     <button class="btn btn-primary" onclick='proccol.contrast(document.getElementById("constantcorrection").value,document.getElementById("gammacorrection").value)'>Correção de tonalidade</button></p>
                                     <p><input id="param1" type="float" size=20 placeholder="Parametro 1">
                                     <input id="param2" type="float" placeholder="Parametro 2"><br>
