@@ -35,10 +35,24 @@ haar.prototype.haarTrans = function(level) {
     if (Math.pow(2,level) > preview.width) {
     	console.log("Erro: muitos niveis")
     } else {
-    	let M = util.toMatrix(imgData, preview.height, preview.width)
+    	let M = util.toMatrix(imgData.data, preview.height, preview.width)
     	for (let i = 0; i < level; i++) {
     		let dim = Math.pow(2, preview.height - i)
+    		let tM = wave.haarLevelTrans(M, dim)
+    		for (let x = 0; x dim; x++) {
+    			for (let y = 0; y < dim; y++) {
+    				for (let k = 0; k < 3; k++) {
+    					M[x][y][k] = tM[x][y][k]
+    				}
+    			}
+    		}
     	}
+
+    	let A = util.toArray(M, preview.height, preview.width)
+    	for (let i = 0; i < A.length; i++) {
+    		imgData.data[i] = A[i]
+    	}
+    	ctxt.putImageData(imgData,0,0);
     }
 }
 
