@@ -7,6 +7,7 @@
              <script src="./js/libs/popper.js" type="application/javascript"></script></script>
              <script src="./js/libs/bootstrap.min.js" type="application/javascript"></script></script>
              <script src= "./js/libs/fft.js" type="application/javascript"></script>
+             <script src= "./js/libs/utils.js" type="application/javascript"></script>
             <link rel="stylesheet" href="./css/libs/bootstrap.css">
             
             <meta charset="utf-8">
@@ -23,6 +24,7 @@
             <script src="./js/pass.js" type="application/javascript"></script>
             <script src="./js/color.js" type="application/javascript"></script>
             <script src="./js/processingcolors.js" type="application/javascript"></script>
+            <script src="./js/haar.js" type="application/javascript"></script>
             <script src="./js/filters.js" type="application/javascript"></script>
 
 
@@ -60,6 +62,7 @@
                                 <li><a href="#5"  class="btn btn-outline-primary" data-toggle="tab">Redu.</a></li>
                                 <li><a href="#6"  class="btn btn-outline-primary" data-toggle="tab">Pass.</a></li>
                                 <li><a href="#7"  class="btn btn-outline-primary" data-toggle="tab">Proc. Cores.</a></li>
+                                <li><a href="#8"  class="btn btn-outline-primary" data-toggle="tab">HAAR</a></li>
                             </ul>
                             <div class="tab-content ">
                                 <div class="tab-pane active" id="1">
@@ -122,6 +125,12 @@
                                     <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value,document.getElementById("constlocaladaptative").value)'>Adaptativo de redução de ruído local </button>
                                     <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
                                 </div>
+
+                                <div class="tab-pane" id="8">
+                                </p>
+                                    <p><input id="param1haar" type="number" size=20 placeholder="Parametro 1 HAAR">
+                                    <button class="btn btn-primary" onclick='wave.haarTrans(document.getElementById("param1haar").value)'>HAAR</button></p>
+                             </div>
                                 <div class="tab-pane" id="5">
                                    </p>
                                     <button class="btn btn-primary" onclick='reduct.imageReduction(2,false)'>Redução</button></p>

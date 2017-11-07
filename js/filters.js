@@ -12,6 +12,7 @@ photoShop.prototype.set = function(preview){
     col.set(preview);
     ps.set(preview);
     proccol.set(preview);
+    wave.set(preview);
 }
 photoShop.prototype.blackWhite = function(){
     preview = photo.getPreview();
