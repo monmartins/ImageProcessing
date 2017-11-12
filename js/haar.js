@@ -35,20 +35,21 @@ haar.prototype.haarTrans = function(level) {
     if (Math.pow(2,level) > preview.width) {
     	console.log("Erro: muitos niveis")
     } else {
-    	let M = util.toMatrix(imgData.data, preview.height, preview.width)
+    	let haar_matrix = util.toMatrix(imgData.data, preview.height, preview.width)
+    	console.log(haar_matrix)
     	for (let i = 0; i < level; i++) {
-    		let dim = Math.pow(2, preview.height - i)
-    		let tM = wave.haarLevelTrans(M, dim)
+    		let dim = preview.height / Math.pow(2, i)
+    		let tM = wave.haarLevelTrans(haar_matrix, dim)
     		for (let x = 0; x< dim; x++) {
     			for (let y = 0; y < dim; y++) {
     				for (let k = 0; k < 3; k++) {
-    					M[x][y][k] = tM[x][y][k]
+    					haar_matrix[x][y][k] = tM[x][y][k]
     				}
     			}
     		}
     	}
-
-    	let A = util.toArray(M, preview.height, preview.width)
+    	//console.log(haar_matrix)
+    	let A = util.toArray(haar_matrix, preview.height, preview.width)
     	for (let i = 0; i < A.length; i++) {
     		imgData.data[i] = A[i]
     	}
@@ -56,32 +57,33 @@ haar.prototype.haarTrans = function(level) {
     }
 }
 
-haar.prototype.haarLevelTrans = function(matrix, dim) {
+haar.prototype.haarLevelTrans = function(haar_matrix, dim) {
+	let hM = Array.from(haar_matrix)
 	/*-- para cada linha --*/
 	for (let i = 0; i < dim; i++) {
-		let lineR = wave.transform(util.getLineColor(matrix, i, 0)) 
-		let lineG = wave.transform(util.getLineColor(matrix, i, 1))
-		let lineB = wave.transform(util.getLineColor(matrix, i, 2))
+		let lineR = wave.transform(util.getLineColor(hM, i, 0)) 
+		let lineG = wave.transform(util.getLineColor(hM, i, 1))
+		let lineB = wave.transform(util.getLineColor(hM, i, 2))
 		for (let j = 0; j < dim; j++) {
-			matrix[i][j][0] = lineR[j]
-			matrix[i][j][1] = lineG[j]
-			matrix[i][j][2] = lineB[j]
+			hM[i][j][0] = lineR[j]
+			hM[i][j][1] = lineG[j]
+			hM[i][j][2] = lineB[j]
 		}
 	}
 
 	/*-- para cada coluna --*/
 	for (let i = 0; i < dim; i++) {
-		let colR = wave.transform(util.getColumnColor(matrix, i, 0))
-		let colG = wave.transform(util.getColumnColor(matrix, i, 1))
-		let colB = wave.transform(util.getColumnColor(matrix, i, 2))
+		let colR = wave.transform(util.getColumnColor(hM, i, 0))
+		let colG = wave.transform(util.getColumnColor(hM, i, 1))
+		let colB = wave.transform(util.getColumnColor(hM, i, 2))
 		for (let j = 0; j < dim; j++) {
-			matrix[j][i][0] = lineR[j]
-			matrix[j][i][1] = lineG[j]
-			matrix[j][i][2] = lineB[j]
+			hM[j][i][0] = colR[j]
+			hM[j][i][1] = colG[j]
+			hM[j][i][2] = colB[j]
 		}
 	}
 
-	return matrix
+	return hM
 }
 
 var wave = new haar();
