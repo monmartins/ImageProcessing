@@ -27,6 +27,11 @@ haar.prototype.back = function(v){
 }
 
 haar.prototype.haarTrans = function(level) {
+	var c = document.getElementById("canvasAlter");
+	var ctx = c.getContext("2d");
+	ctx.moveTo(0,0);
+	ctx.lineTo(200,100);
+	ctx.stroke();
 	preview = wave.getPreview();
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(wave.getPreview(), 0, 0,preview.width, preview.height );
@@ -51,8 +56,11 @@ haar.prototype.haarTrans = function(level) {
     	let A = util.toArray(haar_matrix, preview.height, preview.width)
     	for (let i = 0; i < A.length; i++) {
     		imgData.data[i] = A[i]
-    	}
-    	ctxt.putImageData(imgData,0,0);
+		}
+		ctx.width = preview.width
+		ctx.height =preview.height
+		ctxt.putImageData(imgData,0,0);
+		ctx.putImageData(imgData,0,0);
     }
 }
 
@@ -83,6 +91,13 @@ haar.prototype.haarLevelTrans = function(haar_matrix, dim) {
 	}
 
 	return hM
+}
+haar.prototype.haarTransBack = function(level){
+	var c = document.getElementById("canvasAlter");
+	var ctx = c.getContext("2d");
+	ctx.moveTo(0,0);
+	ctx.lineTo(200,100);
+	ctx.stroke();
 }
 
 var wave = new haar();
