@@ -134,6 +134,28 @@ photoShop.prototype.layer= function (layer){
     }
     ctxt.putImageData(imgData,0,0);    
 }
+photoShop.prototype.sepia= function (){
+    preview = photo.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(photo.getPreview(), 0, 0,preview.width, preview.height );
+    var imgData=ctxt.getImageData(0, 0, preview.width, preview.height);
+    for (let i=0;i<imgData.data.length;i+=4){
+        let tr = 0.393*(imgData.data[i]) + 0.769*(imgData.data[i+1]) + 0.189*(imgData.data[i+2])
+        let tg = 0.349*(imgData.data[i]) + 0.686*(imgData.data[i+1]) + 0.168*(imgData.data[i+2])
+        let tb = 0.272*(imgData.data[i]) + 0.534*(imgData.data[i+1]) + 0.131*(imgData.data[i+2])
+
+        if (tr > 255){r = 255
+        } else{ r = tr}
+        if (tg > 255){g = 255
+        } else{ g = tg}
+        if (tb > 255){b = 255
+        } else{ b = tb}
+        imgData.data[i] = r;
+        imgData.data[i+1] = g;
+        imgData.data[i+2] = b;
+    }
+    ctxt.putImageData(imgData,0,0);
+}
 photoShop.prototype.piecewise= function (points){
     if(points){
         if(points.length>=10){

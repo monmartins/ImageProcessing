@@ -96,6 +96,9 @@
                                     <option value="8">Oitava camada</option>
                                     </select>
                                     <button class="btn btn-primary" onclick='photo.layer(document.getElementById("layerOptions").value)'>Mostrar camada</button></p>
+                                    <button class="btn btn-primary" onclick='photo.sepia()'>Sepia</button></p>
+    
+                               
                                 </div>
                                 <div class="tab-pane" id="2">
                                     <button class="btn btn-primary" onclick='hist.histogram()'>Histograma</button></p>
@@ -132,7 +135,8 @@
                                     <p><input id="param1haar" type="number" size=20 placeholder="Parametro 1 HAAR">
                                     <button class="btn btn-primary" onclick='wave.haarTrans(document.getElementById("param1haar").value)'>HAAR</button></p>
                                     <p><input id="param2haar" type="number" size=20 placeholder="Parametro 1 da volta do HAAR">
-                                    <button class="btn btn-primary" onclick='wave.haarTransBack(document.getElementById("param2haar").value)'>Volta do HAAR</button></p>
+                                        <p><input id="param3haar" type="number" size=20 placeholder="Parametro 1 da volta do HAAR">
+                                            <button class="btn btn-primary" onclick='wave.haarTransBack(document.getElementById("param2haar").value, document.getElementById("param3haar").value)'>Volta do HAAR</button></p>
                              </div>
                                 <div class="tab-pane" id="5">
                                    </p>
