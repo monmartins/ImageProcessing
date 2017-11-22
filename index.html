@@ -24,6 +24,7 @@
             <script src="./js/color.js" type="application/javascript"></script>
             <script src="./js/processingcolors.js" type="application/javascript"></script>
             <script src="./js/haar.js" type="application/javascript"></script>
+            <script src="./js/compressions.js" type="application/javascript"></script>
             <script src="./js/utils.js" type="application/javascript"></script>
             <script src="./js/filters.js" type="application/javascript"></script>
 
@@ -64,6 +65,7 @@
                                 <li><a href="#6"  class="btn btn-outline-primary" data-toggle="tab">Pass.</a></li>
                                 <li><a href="#7"  class="btn btn-outline-primary" data-toggle="tab">Proc. Cores.</a></li>
                                 <li><a href="#8"  class="btn btn-outline-primary" data-toggle="tab">HAAR</a></li>
+                                <li><a href="#9"  class="btn btn-outline-primary" data-toggle="tab">Comp. Imags.</a></li>
                             </ul>
                             <div class="tab-content ">
                                 <div class="tab-pane active" id="1">
@@ -129,7 +131,14 @@
                                     <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value,document.getElementById("constlocaladaptative").value)'>Adaptativo de redução de ruído local </button>
                                     <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
                                 </div>
-
+                                <div class="tab-pane" id="9">
+                                </p>
+                                 <button class="btn btn-primary" onclick='comp.huffman()'>Huffman</button></p>
+                                 <button class="btn btn-primary" onclick='comp.lzw()'>LZW</button></p>
+                                 <button class="btn btn-primary" onclick='comp.run_length()'>Run-Length</button></p>
+                                 <button class="btn btn-primary" onclick='comp.predictivecoding()'>Codificação Preditiva</button></p>
+                                 <button class="btn btn-primary" onclick='comp.waveletencoding()'>Codificação Wavelet</button></p>
+                               </div>
                                 <div class="tab-pane" id="8">
                                 </p>
                                     <p><input id="param1haar" type="number" size=20 placeholder="Parametro 1 HAAR">
@@ -137,7 +146,7 @@
                                     <p><input id="param2haar" type="number" size=20 placeholder="Parametro 1 da volta do HAAR">
                                         <p><input id="param3haar" type="number" size=20 placeholder="Parametro 1 da volta do HAAR">
                                             <button class="btn btn-primary" onclick='wave.haarTransBack(document.getElementById("param2haar").value, document.getElementById("param3haar").value)'>Volta do HAAR</button></p>
-                             </div>
+                                 </div>
                                 <div class="tab-pane" id="5">
                                    </p>
                                     <button class="btn btn-primary" onclick='reduct.imageReduction(2,false)'>Redução</button></p>
