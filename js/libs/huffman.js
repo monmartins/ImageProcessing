@@ -6,6 +6,7 @@ Huffman = {
     return builder.build();
   }
 };
+// Huffman.DataImage =function(){}
 Huffman.CoreHelpers = {
     isArray: function(obj) {
       return !!(obj && obj.constructor === Array);
@@ -179,3 +180,324 @@ Huffman.Tree.prototype.encode = function(imageData) {
     value = table[1];
     return Huffman.CoreHelpers.isArray(value) ? [this.compressCombinedTable(value[0]), this.compressCombinedTable(value[1])] : value;
   };
+
+
+
+  Huffman.parseDataToUint8array = function(width,
+                                    height,
+                                    huffmanR,
+                                    huffmanG,
+                                    huffmanB,
+                                    huffmanRencode,
+                                    huffmanGencode,
+                                    huffmanBencode){
+        var prewviewWidth = String(width).length;
+        var prewviewHeight = String(height).length;
+        var huffmanRLength = String((JSON.stringify(huffmanR).length));
+        var huffmanGLength = String((JSON.stringify(huffmanG).length));
+        var huffmanBLength = String((JSON.stringify(huffmanB).length));
+        var huffmanRencodeLength = String((huffmanRencode.length));
+        var huffmanGencodeLength = String((huffmanGencode.length));
+        var huffmanBencodeLength = String((huffmanBencode.length));
+        var uint = new Uint8Array(11+ //Itens in uint
+            prewviewWidth+
+            prewviewHeight+
+            (JSON.stringify(huffmanR).length)+
+            (JSON.stringify(huffmanG).length)+
+            (JSON.stringify(huffmanB).length)+
+            huffmanRencode.length+
+            huffmanGencode.length+
+            huffmanBencode.length+
+            huffmanRLength.length+
+            huffmanGLength.length+
+            huffmanBLength.length+
+            huffmanRencodeLength.length+
+            huffmanGencodeLength.length+
+            huffmanBencodeLength.length+
+            String(huffmanRencode.length).length+
+            String(huffmanGencode.length).length+
+            String(huffmanBencode.length).length);
+        var indexuint = 0;
+        uint[indexuint]=prewviewWidth;
+        indexuint++;
+        for(i=0;i<prewviewWidth;i++){
+            let value = String(width)[i];
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       uint[indexuint]=prewviewHeight;
+        indexuint++;
+        for(i=0;i<prewviewHeight;i++){
+            let value = String(height)[i];
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       uint[indexuint]=huffmanRLength.length;
+        indexuint++;
+        for(i=0;i<huffmanRLength.length;i++){
+            let value = huffmanRLength[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       uint[indexuint]=huffmanGLength.length;
+        indexuint++;
+        for(i=0;i<huffmanGLength.length;i++){
+            let value = huffmanGLength[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       uint[indexuint]=huffmanBLength.length;
+        indexuint++;
+        for(i=0;i<huffmanBLength.length;i++){
+            let value = huffmanBLength[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+
+       uint[indexuint]=huffmanRencodeLength.length;
+        indexuint++;
+        for(i=0;i<huffmanRencodeLength.length;i++){
+            let value = huffmanRencodeLength[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       
+        uint[indexuint]=huffmanGencodeLength.length;
+        indexuint++;
+        for(i=0;i<huffmanGencodeLength.length;i++){
+            let value = huffmanGencodeLength[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       
+        uint[indexuint]=huffmanBencodeLength.length;
+        indexuint++;
+        for(i=0;i<huffmanBencodeLength.length;i++){
+            let value = huffmanBencodeLength[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       
+        for(let i=0;i < JSON.stringify(huffmanR).length;i++){
+            uint[indexuint]=JSON.stringify(huffmanR).charCodeAt(i);
+            indexuint += 1;
+        }
+       for(let i=0;i < JSON.stringify(huffmanG).length;i++){
+            uint[indexuint]=JSON.stringify(huffmanG).charCodeAt(i);
+            indexuint += 1;
+        }
+       for(let i=0;i < JSON.stringify(huffmanB).length;i++){
+            uint[indexuint]=JSON.stringify(huffmanB).charCodeAt(i);
+            indexuint += 1;
+        }
+       
+        //Length of HuffRencode
+        uint[indexuint]=String(huffmanRencode.length).length;
+        indexuint++;
+        for(i=0;i<String(huffmanRencode.length).length;i++){
+            let value = String(huffmanRencode.length)[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       
+        //
+        uint[indexuint]=String(huffmanGencode.length).length;
+        indexuint++;
+        for(i=0;i<String(huffmanGencode.length).length;i++){
+            let value = String(huffmanGencode.length)[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       //
+        uint[indexuint]=String(huffmanBencode.length).length;
+        indexuint++;
+        for(i=0;i<String(huffmanBencode.length).length;i++){
+            let value = String(huffmanBencode.length)[i]
+            uint[indexuint]=value;
+            indexuint++;
+        }
+       for(let i=0;i < (huffmanRencode.length);i++){
+            uint[indexuint]=huffmanRencode.charCodeAt(i);
+            indexuint += 1;
+        }
+       for(let i=0;i < (huffmanGencode.length);i++){
+            uint[indexuint]=huffmanGencode.charCodeAt(i);
+            indexuint += 1;
+        }
+       
+        for(let i=0;i < huffmanBencode.length;i++){
+            uint[indexuint]=huffmanBencode.charCodeAt(i);
+            indexuint += 1;
+        }
+       
+
+        return uint;
+    }
+
+
+    Huffman.parseUint8arrayToData = function(uint){
+        var image = {};
+        var indexuint = 0;
+        var prewviewWidth = uint[indexuint];
+        indexuint++;
+        var width = "";
+        for(i=0;i<prewviewWidth;i++){
+            width += uint[indexuint];
+            indexuint++
+        }
+        width = Number(width);
+        //
+        var prewviewHeight = uint[indexuint];
+        indexuint++;
+        var height = "";
+        for(i=0;i<prewviewWidth;i++){
+            height += uint[indexuint];
+            indexuint++
+        }
+        height = Number(height);
+        //
+        var huffmanRLengthArray = uint[indexuint];
+        indexuint++;
+        var huffmanRLength= "";
+        for(i=0;i<huffmanRLengthArray;i++){
+            let value = uint[indexuint]
+            huffmanRLength+=(value);
+            indexuint++;
+        }
+
+        //
+        var huffmanGLengthArray = uint[indexuint];
+        indexuint++;
+        var huffmanGLength= "";
+        for(i=0;i<huffmanGLengthArray;i++){
+            let value = uint[indexuint]
+            huffmanGLength+=(value);
+            indexuint++;
+        }
+        //
+        var huffmanBLengthArray = uint[indexuint];
+        indexuint++;
+        var huffmanBLength= "";
+        for(i=0;i<huffmanBLengthArray;i++){
+            let value = uint[indexuint]
+            huffmanBLength+=(value);
+            indexuint++;
+        }
+        //
+        var huffmanREncodeLengthArray = uint[indexuint];
+        indexuint++;
+        var huffmanREncodeLength= "";
+        for(i=0;i<parseInt(huffmanREncodeLengthArray);i++){
+            let value = uint[indexuint]
+            huffmanREncodeLength+=(value);
+            indexuint++;
+        }
+        //
+        var huffmanGEncodeLengthArray = uint[indexuint];
+        indexuint++;
+        var huffmanGEncodeLength= "";
+        for(i=0;i<huffmanGEncodeLengthArray;i++){
+            let value = uint[indexuint]
+            huffmanGEncodeLength+=(value);
+            indexuint++;
+        }
+        //
+        var huffmanBEncodeLengthArray = uint[indexuint];
+        indexuint++;
+        var huffmanBEncodeLength= "";
+        for(i=0;i<huffmanBEncodeLengthArray;i++){
+            let value = uint[indexuint]
+            huffmanBEncodeLength+=(value);
+            indexuint++;
+        }
+        
+        //
+        var huffmanRTree = "";
+        for(i=0;i<parseInt(huffmanRLength);i++){
+            let value = uint[indexuint]
+            huffmanRTree+=String.fromCharCode(value);
+            indexuint++;
+        }
+        //
+        var huffmanGTree = "";
+        for(i=0;i<parseInt(huffmanGLength);i++){
+            let value = uint[indexuint]
+            huffmanGTree+=String.fromCharCode(value);
+            indexuint++;
+        }
+        //
+        var huffmanBTree = "";
+        for(i=0;i<parseInt(huffmanBLength);i++){
+            let value = uint[indexuint]
+            huffmanBTree+=String.fromCharCode(value);
+            indexuint++;
+        }
+        
+        var HuffmanRencodelengthLength = uint[indexuint];
+        var HuffmanRencodelength = "";
+        indexuint++;
+        for(i=0;i<parseInt(HuffmanRencodelengthLength);i++){
+            let value = uint[indexuint];
+            HuffmanRencodelength +=value;
+            indexuint++;
+        }
+        
+        var HuffmanGencodelengthLength = uint[indexuint];
+        var HuffmanGencodelength = "";
+        indexuint++;
+        for(i=0;i<parseInt(HuffmanGencodelengthLength);i++){
+            let value = uint[indexuint];
+            HuffmanGencodelength +=value;
+            indexuint++;
+        }
+        
+        var HuffmanBencodelengthLength = uint[indexuint];
+        var HuffmanBencodelength = "";
+        indexuint++;
+        for(i=0;i<parseInt(HuffmanBencodelengthLength);i++){
+            let value = uint[indexuint];
+            HuffmanBencodelength +=value;
+            indexuint++;
+        }
+        //
+        var huffmanREncode = "";
+        for(i=0;i<parseInt(HuffmanRencodelength);i++){
+            let value = uint[indexuint]
+            huffmanREncode+=String.fromCharCode(value);
+            indexuint++;
+        }
+        //
+        var huffmanGEncode = "";
+        for(i=0;i<parseInt(HuffmanGencodelength);i++){
+            let value = uint[indexuint]
+            huffmanGEncode+=String.fromCharCode(value);
+            indexuint++;
+        }
+        //
+        var huffmanBEncode = "";
+        for(i=0;i<parseInt(HuffmanBencodelength);i++){
+            let value = uint[indexuint]
+            huffmanBEncode+=String.fromCharCode(value);
+            indexuint++;
+        }
+
+
+        
+
+        image.width = width;
+        image.height = height;
+        image.huffmanR = huffmanRLength;
+        image.huffmanG = huffmanGLength;
+        image.huffmanB = huffmanBLength;
+        image.huffmanRTree = huffmanRTree;
+        image.huffmanGTree = huffmanGTree;
+        image.huffmanBTree = huffmanBTree;
+        image.huffmanREncodeLength = huffmanREncodeLength;
+        image.huffmanGEncodeLength = huffmanGEncodeLength;
+        image.huffmanBEncodeLength = huffmanBEncodeLength;
+        image.huffmanREncode = huffmanREncode;
+        image.huffmanGEncode = huffmanGEncode;
+        image.huffmanBEncode = huffmanBEncode;
+        return image;
+
+    }
