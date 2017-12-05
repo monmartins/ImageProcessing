@@ -47,17 +47,7 @@ Run_length.prototype.encode = function(input) {
         count ++;
     }
     encoding.push([count, prev]);
-    var encodeString = "";
-    for(let i=0;i<encoding.length;i++){
-        for(let j=0;j<encoding[i].length;j++){
-            encodeString+=String(encoding[i][j])
-        }
-    }
-    var uint = new Uint8Array(encodeString.length);
-    for(let j=0;j<encodeString.length;j++){
-        uint[j]=encodeString.charCodeAt(j);
-    }
-    return uint;
+    return encoding;
 }
 Run_length.prototype.decode = function(input) {
     var decoding = [];

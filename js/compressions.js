@@ -141,16 +141,178 @@ compressions.prototype.run_length = function () {
         g[j] = (imgData.data[i+1]);
         b[j] = (imgData.data[i+2]);
     }
-    console.log(r.length);
     var run_lengthR = run.encode(r);
-    console.log(run_lengthR);
-    console.log((run_lengthR).length);       
-    var file= run_lengthR;
+    var run_lengthG = run.encode(g);
+    var run_lengthB = run.encode(b);
+    var lengthR = String(run_lengthR.length);
+    var lengthG = String(run_lengthG.length);
+    var lengthB = String(run_lengthB.length);
+
+    var uint = new Uint8Array(lengthR.length+
+        lengthG.length+
+        lengthB.length+
+       ( 2*run_lengthR.length)+(2*run_lengthG.length)+(2*run_lengthB.length));
+    var indexuint = 0;
+    uint[indexuint]=lengthR.length;//.charCodeAt(j);
+    indexuint++;
+    uint[indexuint]=lengthG.length;//.charCodeAt(j);
+    indexuint++;
+    uint[indexuint]=lengthB.length;//.charCodeAt(j);
+    indexuint++;
+    for(let j=0;j<lengthR.length;j++){
+        uint[indexuint]=lengthR[j];//.charCodeAt(j);
+        indexuint++;
+    }       
+    for(let j=0;j<lengthG.length;j++){
+        uint[indexuint]=lengthG[j];//.charCodeAt(j);
+        indexuint++;
+    } 
+    for(let j=0;j<lengthB.length;j++){
+        uint[indexuint]=lengthB[j];//.charCodeAt(j);
+        indexuint++;
+    } 
+
+    for(let j=0;j<run_lengthR.length;j++){
+        uint[indexuint]=run_lengthR[j][0];//.charCodeAt(j);
+        indexuint++;
+        uint[indexuint]=run_lengthR[j][1];//.charCodeAt(j);
+        indexuint++;
+    }       
+    for(let j=0;j<run_lengthG.length;j++){
+        uint[indexuint]=run_lengthG[j][0];//.charCodeAt(j);
+        indexuint++;
+        uint[indexuint]=run_lengthG[j][1];//.charCodeAt(j);
+        indexuint++;
+    } 
+    for(let j=0;j<run_lengthB.length;j++){
+        uint[indexuint]=run_lengthB[j][0];//.charCodeAt(j);
+        indexuint++;
+        uint[indexuint]=run_lengthB[j][1];//.charCodeAt(j);
+        indexuint++;
+    } 
+
+    uint[indexuint]=String(preview.width).length;//.charCodeAt(j);
+    indexuint++;
+    uint[indexuint]=String(preview.height).length;//.charCodeAt(j);
+    indexuint++;
+    for(let j=0;j<String(preview.width).length;j++){
+        uint[indexuint]=String(preview.width)[j];//.charCodeAt(j);
+        indexuint++;
+    }       
+    for(let j=0;j<String(preview.height).length;j++){
+        uint[indexuint]=String(preview.height)[j];//.charCodeAt(j);
+        indexuint++;
+    } 
+    var file= uint;
 
     var data = new Blob([file]);
     var r2 = document.getElementById("r2");
     r2.href = URL.createObjectURL(data);
     ctxt.putImageData(imgData, 0, 0);
+}
+
+
+compressions.prototype.fileRun_Length = function () {
+    file = document.getElementById("run_length").files[0]; //sames as here
+    var reader = new FileReader();
+    reader.readAsArrayBuffer(file); //reads the data as a txt
+    reader.onloadend = function () {
+
+        file = (reader.result);
+        uint = new Uint8Array(file);
+        var indexuint = 0;
+        var lenR = uint[indexuint];
+        indexuint++;
+        var lenG = uint[indexuint];
+        indexuint++;
+        var lenB = uint[indexuint];
+        var lengthR = "";
+        var lengthG = "";
+        var lengthB = "";
+        for(let j=0;j<parseInt(lenR);j++){
+            lengthR+=uint[indexuint];
+            indexuint++;
+        }       
+        for(let j=0;j<parseInt(lenG);j++){
+            lengthG+=uint[indexuint];
+            indexuint++;
+        }   
+        for(let j=0;j<parseInt(lenB);j++){
+            lengthB+=uint[indexuint];
+            indexuint++;
+        }   
+        var r_encode = [];
+        var g_encode = [];
+        var b_encode = [];
+        for(let j=0;j<parseInt(lengthR);j++){
+            let value =[];
+            value.push(uint[indexuint]);
+            indexuint++;
+            value.push(uint[indexuint]);
+            indexuint++;
+            r_encode.push(value);
+        }       
+        for(let j=0;j<parseInt(lengthG);j++){
+            let value =[];
+            value.push(uint[indexuint]);
+            indexuint++;
+            value.push(uint[indexuint]);
+            indexuint++;
+            g_encode.push(value);
+        }   
+        for(let j=0;j<parseInt(lengthB);j++){
+            let value =[];
+            value.push(uint[indexuint]);
+            indexuint++;
+            value.push(uint[indexuint]);
+            indexuint++;
+            b_encode.push(value);
+        }   
+
+        var r = run.decode(r_encode);
+        var g = run.decode(g_encode);
+        var b = run.decode(b_encode);
+
+
+        var image = {};
+        var lenWidth = uint[indexuint];//.charCodeAt(j);
+        indexuint++;
+        var lenHeight = uint[indexuint];//.charCodeAt(j);
+        indexuint++;
+        var width ="";
+        var height ="";
+        for(let j=0;j<parseInt(lenWidth);j++){
+            width+= uint[indexuint]
+            indexuint++;
+        }       
+        for(let j=0;j<parseInt(lenHeight);j++){
+            height+= uint[indexuint]
+            indexuint++;
+        }   
+        image.width=parseInt(width)
+        image.height=parseInt(height)
+
+
+        preview = document.createElement('img');
+        preview.width = image.width;
+        preview.height = image.height;
+
+        canvas.width = preview.width;
+        canvas.height = preview.height;
+        ctxt = canvas.getContext('2d');
+        ctxt.drawImage(preview, canvas.width, 0, canvas.width, canvas.height);
+        var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
+
+
+        for (var i = 0, j = 0; i < imgData.data.length; i += 4, j += 1) {
+            imgData.data[i] = r[j];
+            imgData.data[i + 1] = g[j];
+            imgData.data[i + 2] = b[j];
+            imgData.data[i + 3] = 255;
+        }
+        ctxt.putImageData(imgData, 0, 0);
+    }
+
 }
 compressions.prototype.predictivecoding = function () {
     ctxt = canvas.getContext('2d');
