@@ -147,7 +147,7 @@ compressions.prototype.waveletencoding = function () {
 compressions.prototype.lzw_encode = function (data) {
     //data é um vetor
     //usando imagens o dict deve ser iniciado com os valores 0 .. 255
-    let dict = {}
+    let dict = [];
     for (let i = 0; i < 256; i++) {
         stringfied = i.toString()
         if (stringfied.length == 1)
@@ -162,8 +162,8 @@ compressions.prototype.lzw_encode = function (data) {
     for (let i = 0; i < data.length; i++) {
         data[i] = data[i].toString();
     }
-    var objdict = Object.values(dict);
     
+    var objdict = Object.values(dict);
     for (let i = 0; i < data.length; i++) {
         let next_char = data[i]
 
@@ -176,11 +176,13 @@ compressions.prototype.lzw_encode = function (data) {
             word += next_char
         } else {
             seq.push(objdict.indexOf(word))
-            dict[next_id++] = word + next_char
+            objdict[next_id++] = word + next_char
             word = next_char
         }
     }
     seq.push(objdict.indexOf(word))
+    console.log(seq.length)
+    console.log("Feito")
     return seq
 }
 
@@ -229,6 +231,56 @@ compressions.prototype.lzw_decode = function (data) {
     return sequencia
 }
 
+compressions.prototype.huffman_run_length = function () {
+    preview = comp.getPreview();
+    ctxt = canvas.getContext('2d');
+    ctxt.drawImage(comp.getPreview(), 0, 0, preview.width, preview.height);
+    var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
+
+    var r = [];
+    var g = [];
+    var b = [];
+    for (var i = 0, j = 0; i < imgData.data.length; i += 4, j += 1) {
+        r[j] = (imgData.data[i]);
+        g[j] = (imgData.data[i + 1]);
+        b[j] = (imgData.data[i + 2]);
+    }
+
+    r_run = run.encode(r);
+    g_run = run.encode(g);
+    b_run = run.encode(b);
+
+    console.log(r.length)
+    console.log(r_run.length)
+    console.log(g.length)
+    console.log(g_run.length)
+    console.log(b.length)
+    console.log(b_run.length)
+    
+    var huffmanR = Huffman.treeFromImage(r_run);
+    var huffmanG = Huffman.treeFromImage(g_run);
+    var huffmanB = Huffman.treeFromImage(b_run);
+    var huffmanRencode = huffmanR.encode(r_run);
+    var huffmanGencode = huffmanG.encode(g_run);
+    var huffmanBencode = huffmanB.encode(b_run);
+    var huffmanRTreeEncode = huffmanR.encodeTree();
+    var huffmanGTreeEncode = huffmanG.encodeTree();
+    var huffmanBTreeEncode = huffmanB.encodeTree();
+    var file = Huffman.parseDataToUint8array(preview.width,
+        preview.height,
+        huffmanRTreeEncode,
+        huffmanGTreeEncode,
+        huffmanBTreeEncode,
+        huffmanRencode,
+        huffmanGencode,
+        huffmanBencode);
+
+    var data = new Blob([file]);
+    var r3 = document.getElementById("r3");
+    r3.href = URL.createObjectURL(data);
+
+    ctxt.putImageData(imgData, 0, 0);
+}
 compressions.prototype.huffman_lzw = function () {
     preview = comp.getPreview();
     ctxt = canvas.getContext('2d');
@@ -245,14 +297,8 @@ compressions.prototype.huffman_lzw = function () {
     }
 
     r_seq = comp.lzw_encode(r)
-    console.log("r_seq")
-    console.log(r_seq)
     g_seq = comp.lzw_encode(g)
-    console.log("g_seq")
-    console.log(g_seq)
     b_seq = comp.lzw_encode(b)
-    console.log("b_seq")
-    console.log(b_seq)
 
     var huffmanR = Huffman.treeFromImage(r_seq);
     var huffmanG = Huffman.treeFromImage(g_seq);

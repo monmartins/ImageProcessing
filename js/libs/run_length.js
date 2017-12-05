@@ -53,15 +53,10 @@ Run_length.prototype.encode = function(input) {
             encodeString+=String(encoding[i][j])
         }
     }
-    console.log(encodeString.length)
     var uint = new Uint8Array(encodeString.length);
-    console.log(encodeString.charCodeAt(j))
-    console.log(encodeString.charCodeAt(j).toString(2))
     for(let j=0;j<encodeString.length;j++){
         uint[j]=encodeString.charCodeAt(j);
     }
-    console.log(uint[0]);
-    console.log("feito")
     return uint;
 }
 Run_length.prototype.decode = function(input) {
