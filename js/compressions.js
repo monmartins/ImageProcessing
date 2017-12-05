@@ -143,27 +143,31 @@ compressions.prototype.lzw_encode = function (data) {
             stringfied = "0" + stringfied
         dict[i] = stringfied
     }
-
     let word = ""
     let next_id = 256
     let seq = new Array()
     for (let i = 0; i < data.length; i++) {
+        data[i] = data[i].toString();
+    }
+    var objdict = Object.values(dict);
+    
+    for (let i = 0; i < data.length; i++) {
+        let next_char = data[i]
 
-        let next_char = data[i].toString()
         if (next_char.length == 1)
             next_char = "00" + next_char
         if (next_char.length == 2)
             next_char = "0" + next_char
 
-        if (Object.values(dict).indexOf(word + next_char) >= 0) {
+        if (objdict.indexOf(word + next_char) >= 0) {
             word += next_char
         } else {
-            seq.push(Object.values(dict).indexOf(word))
+            seq.push(objdict.indexOf(word))
             dict[next_id++] = word + next_char
             word = next_char
         }
     }
-    seq.push(Object.values(dict).indexOf(word))
+    seq.push(objdict.indexOf(word))
     return seq
 }
 
@@ -205,7 +209,6 @@ compressions.prototype.lzw_decode = function (data) {
     let sequencia = new Array()
     for(let i=0; i<seq.length; i++){
         for(let j=0; j<seq[i].length; j+=3){
-            console.log(seq[i].substring(j, j+3))
             sequencia.push(parseInt(seq[i].substring(j, j+3)))
         }
     }
@@ -229,8 +232,14 @@ compressions.prototype.huffman_lzw = function () {
     }
 
     r_seq = comp.lzw_encode(r)
+    console.log("r_seq")
+    console.log(r_seq)
     g_seq = comp.lzw_encode(g)
+    console.log("g_seq")
+    console.log(g_seq)
     b_seq = comp.lzw_encode(b)
+    console.log("b_seq")
+    console.log(b_seq)
 
     var huffmanR = Huffman.treeFromImage(r_seq);
     var huffmanG = Huffman.treeFromImage(g_seq);
