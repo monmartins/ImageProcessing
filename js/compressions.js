@@ -164,26 +164,31 @@ compressions.prototype.lzw_encode = function (data) {
         }
     }
     seq.push(Object.values(dict).indexOf(word))
-
     return seq
 }
 
 
-compressions.prototype.lzw_decode = function () {
-    let data = [3, 1, 4, 6, 5, 8, 3]
+compressions.prototype.lzw_decode = function (data) {
+    //let data = [3, 1, 4, 6, 5, 8, 3]
     let dict = {}
-    for (let i = 0; i < 4; i++) {
-        dict[i] = i.toString()
+    for (let i = 0; i < 256; i++) {
+        stringfied = i.toString()
+        if (stringfied.length == 1)
+            stringfied = "00" + stringfied
+        if (stringfied.length == 2)
+            stringfied = "0" + stringfied
+        dict[i] = stringfied
     }
 
     let seq = new Array()
     let next_code = data[0]
     seq.push(dict[next_code])
     let code = ""
-    let next_id = 4
+    let next_id = 256
     for (let i = 1; i < data.length; i++) {
         code = next_code
         next_code = data[i]
+
         if (dict[next_code]) {
             seq.push(dict[next_code])
             let word = dict[code]
@@ -196,9 +201,16 @@ compressions.prototype.lzw_decode = function () {
             dict[next_id++] = word + next_char
         }
     }
+    
+    let sequencia = new Array()
+    for(let i=0; i<seq.length; i++){
+        for(let j=0; j<seq[i].length; j+=3){
+            console.log(seq[i].substring(j, j+3))
+            sequencia.push(parseInt(seq[i].substring(j, j+3)))
+        }
+    }
 
-    console.log(seq)
-
+    return sequencia
 }
 
 var comp = new compressions();
