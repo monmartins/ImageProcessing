@@ -7,8 +7,12 @@
              <script src="./js/libs/popper.js" type="application/javascript"></script></script>
              <script src="./js/libs/bootstrap.min.js" type="application/javascript"></script></script>
              <script src= "./js/libs/fft.js" type="application/javascript"></script>
+             <script src= "./js/libs/waveletencoding.js" type="application/javascript"></script>
+             <script src= "./js/libs/predictivecoding.js" type="application/javascript"></script>
+             <script src= "./js/libs/run_length.js" type="application/javascript"></script>
+             <script src= "./js/libs/lzw.js" type="application/javascript"></script>
              <script src= "./js/libs/huffman.js" type="application/javascript"></script>
-            <link rel="stylesheet" href="./css/libs/bootstrap.css">
+             <link rel="stylesheet" href="./css/libs/bootstrap.css">
             
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -139,6 +143,7 @@
                                  <a id="a2" download="imagem.hr" type="octet/stream" charset='utf-8'>Download Compress Huffman</a></p> 
                                  <button class="btn btn-primary" onclick='comp.lzw()'>LZW</button></p>
                                  <button class="btn btn-primary" onclick='comp.run_length()'>Run-Length</button></p>
+                                 <a id="r2" download="imagem.hr" type="octet/stream" charset='utf-8'>Download Compress Run-Length</a></p> 
                                  <button class="btn btn-primary" onclick='comp.predictivecoding()'>Codificação Preditiva</button></p>
                                  <button class="btn btn-primary" onclick='comp.waveletencoding()'>Codificação Wavelet</button></p>
                                </div>

@@ -249,7 +249,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
        uint[indexuint]=huffmanBLength.length;
         indexuint++;
         for(i=0;i<huffmanBLength.length;i++){
-            let value = huffmanBLength[i]
+            let value = huffmanBLength[i];
             uint[indexuint]=value;
             indexuint++;
         }
