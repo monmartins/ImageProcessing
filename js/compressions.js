@@ -187,18 +187,16 @@ compressions.prototype.lzw_decode = function () {
         if (dict[next_code]) {
             seq.push(dict[next_code])
             let word = dict[code]
-            let next_char = (dict[next_code]).charAt(0)
+            let next_char = (dict[next_code]).substring(0,3)
             dict[next_id++] = word + next_char
         } else {
             let word = dict[code]
-            let next_char = (dict[code]).charAt(0)
+            let next_char = (dict[code]).substring(0,3)
             seq.push(word + next_char)
             dict[next_id++] = word + next_char
         }
     }
 
-    console.log(Object.keys(dict))
-    console.log(Object.values(dict))
     console.log(seq)
 
 }
