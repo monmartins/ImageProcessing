@@ -87,14 +87,45 @@ compressions.prototype.huffman = function () {
 }
 
 compressions.prototype.lzw = function () {
+    preview = comp.getPreview();
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(comp.getPreview(), 0, 0, preview.width, preview.height);
     var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
-    for (var i = 0; i < imgData.data.length; i += 4) {
-        imgData.data[i] = 255 - imgData.data[i];
-        imgData.data[i + 1] = 255 - imgData.data[i + 1];
-        imgData.data[i + 2] = 255 - imgData.data[i + 2];
+
+    var r = [];
+    var g = [];
+    var b = [];
+    for (var i = 0, j = 0; i < imgData.data.length; i += 4, j += 1) {
+        r[j] = (imgData.data[i]);
+        g[j] = (imgData.data[i + 1]);
+        b[j] = (imgData.data[i + 2]);
     }
+
+    r_seq = comp.lzw_encode(r)
+    g_seq = comp.lzw_encode(g)
+    b_seq = comp.lzw_encode(b)
+    var string = "";
+    for(i in r_seq){
+        string+=String(i)
+    }
+    for(i in g_seq){
+        string+=String(i)
+    }
+    for(i in b_seq){
+        string+=String(i)
+    }
+    var uint = new Uint8Array(string.length);
+    var index = 0;
+    for(i in string){
+        uint[index] = i.charCodeAt(0);
+        index++;
+    }
+    var file = uint;
+    var data = new Blob([file]);
+    var r4 = document.getElementById("r4");
+    r4.href = URL.createObjectURL(data);
+    console.log("Feito")
+
     ctxt.putImageData(imgData, 0, 0);
 }
 compressions.prototype.run_length = function () {
@@ -148,6 +179,17 @@ compressions.prototype.lzw_encode = function (data) {
     //data é um vetor
     //usando imagens o dict deve ser iniciado com os valores 0 .. 255
     let dict = [];
+    // let dictreverse = [];
+    // if(typeof dictreverse[parseInt(word + next_char)] != "undefined"){
+    //     word += next_char
+
+    // }else{
+    //     seq.push(dict.indexOf(word))
+    //     dict[next_id++] = word + next_char
+    //     dictreverse[parseInt(word + next_char)] = next_id++;
+    //     word = next_char
+
+    // }
     for (let i = 0; i < 256; i++) {
         stringfied = i.toString()
         if (stringfied.length == 1)
@@ -163,7 +205,7 @@ compressions.prototype.lzw_encode = function (data) {
         data[i] = data[i].toString();
     }
     
-    var objdict = Object.values(dict);
+    // var objdict = Object.values(dict);
     for (let i = 0; i < data.length; i++) {
         let next_char = data[i]
 
@@ -172,15 +214,15 @@ compressions.prototype.lzw_encode = function (data) {
         if (next_char.length == 2)
             next_char = "0" + next_char
 
-        if (objdict.indexOf(word + next_char) >= 0) {
+        if (dict.indexOf(word + next_char) >= 0) {
             word += next_char
         } else {
-            seq.push(objdict.indexOf(word))
-            objdict[next_id++] = word + next_char
+            seq.push(dict.indexOf(word))
+            dict[next_id++] = word + next_char
             word = next_char
         }
     }
-    seq.push(objdict.indexOf(word))
+    seq.push(dict.indexOf(word))
     console.log(seq.length)
     console.log("Feito")
     return seq
@@ -300,6 +342,7 @@ compressions.prototype.huffman_lzw = function () {
     g_seq = comp.lzw_encode(g)
     b_seq = comp.lzw_encode(b)
 
+    
     var huffmanR = Huffman.treeFromImage(r_seq);
     var huffmanG = Huffman.treeFromImage(g_seq);
     var huffmanB = Huffman.treeFromImage(b_seq);
@@ -309,6 +352,7 @@ compressions.prototype.huffman_lzw = function () {
     var huffmanRTreeEncode = huffmanR.encodeTree();
     var huffmanGTreeEncode = huffmanG.encodeTree();
     var huffmanBTreeEncode = huffmanB.encodeTree();
+
     var file = Huffman.parseDataToUint8array(preview.width,
         preview.height,
         huffmanRTreeEncode,
@@ -318,15 +362,17 @@ compressions.prototype.huffman_lzw = function () {
         huffmanGencode,
         huffmanBencode);
 
+
     var data = new Blob([file]);
-    var a2 = document.getElementById("a2");
-    a2.href = URL.createObjectURL(data);
+    var a3 = document.getElementById("a3");
+    a3.href = URL.createObjectURL(data);
+    console.log("Feito")
 
     ctxt.putImageData(imgData, 0, 0);
 }
 
 compressions.prototype.fileHuffmanLzw = function () {
-    file = document.getElementById("huffman").files[0]; //sames as here
+    file = document.getElementById("huffmanlzw").files[0]; //sames as here
     var reader = new FileReader();
     reader.readAsArrayBuffer(file); //reads the data as a txt
     reader.onloadend = function () {

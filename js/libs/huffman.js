@@ -225,6 +225,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 1")
        uint[indexuint]=prewviewHeight;
         indexuint++;
         for(i=0;i<prewviewHeight;i++){
@@ -232,6 +233,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 2")
        uint[indexuint]=huffmanRLength.length;
         indexuint++;
         for(i=0;i<huffmanRLength.length;i++){
@@ -239,6 +241,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 3")
        uint[indexuint]=huffmanGLength.length;
         indexuint++;
         for(i=0;i<huffmanGLength.length;i++){
@@ -246,6 +249,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 4")
        uint[indexuint]=huffmanBLength.length;
         indexuint++;
         for(i=0;i<huffmanBLength.length;i++){
@@ -254,6 +258,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             indexuint++;
         }
 
+        console.log("for 5")
        uint[indexuint]=huffmanRencodeLength.length;
         indexuint++;
         for(i=0;i<huffmanRencodeLength.length;i++){
@@ -261,6 +266,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 6")
        
         uint[indexuint]=huffmanGencodeLength.length;
         indexuint++;
@@ -270,6 +276,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             indexuint++;
         }
        
+        console.log("for 7")
         uint[indexuint]=huffmanBencodeLength.length;
         indexuint++;
         for(i=0;i<huffmanBencodeLength.length;i++){
@@ -278,19 +285,23 @@ Huffman.Tree.prototype.encode = function(imageData) {
             indexuint++;
         }
        
+        console.log("for 8")
         for(let i=0;i < JSON.stringify(huffmanR).length;i++){
             uint[indexuint]=JSON.stringify(huffmanR).charCodeAt(i);
             indexuint += 1;
         }
+        console.log("for 9")
        for(let i=0;i < JSON.stringify(huffmanG).length;i++){
             uint[indexuint]=JSON.stringify(huffmanG).charCodeAt(i);
             indexuint += 1;
         }
+        console.log("for 10")
        for(let i=0;i < JSON.stringify(huffmanB).length;i++){
             uint[indexuint]=JSON.stringify(huffmanB).charCodeAt(i);
             indexuint += 1;
         }
        
+        console.log("for 11")
         //Length of HuffRencode
         uint[indexuint]=String(huffmanRencode.length).length;
         indexuint++;
@@ -299,6 +310,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 12")
        
         //
         uint[indexuint]=String(huffmanGencode.length).length;
@@ -308,6 +320,7 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 13")
        //
         uint[indexuint]=String(huffmanBencode.length).length;
         indexuint++;
@@ -316,20 +329,24 @@ Huffman.Tree.prototype.encode = function(imageData) {
             uint[indexuint]=value;
             indexuint++;
         }
+        console.log("for 14")
        for(let i=0;i < (huffmanRencode.length);i++){
             uint[indexuint]=huffmanRencode.charCodeAt(i);
             indexuint += 1;
         }
+        console.log("for 15")
        for(let i=0;i < (huffmanGencode.length);i++){
             uint[indexuint]=huffmanGencode.charCodeAt(i);
             indexuint += 1;
         }
+        console.log("for 16")
        
         for(let i=0;i < huffmanBencode.length;i++){
             uint[indexuint]=huffmanBencode.charCodeAt(i);
             indexuint += 1;
         }
        
+        console.log("for 17")
 
         return uint;
     }

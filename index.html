@@ -138,14 +138,18 @@
                                 </div>
                                 <div class="tab-pane" id="9">
                                 </p>
-                                 <button class="btn btn-primary" onclick='comp.huffman_lzw()'>Huffman</button>
-                                 <input id="huffman" class="btn btn-primary " type="file" onchange="(comp.fileHuffmanLzw())"><br> </p> 
+                                 <button class="btn btn-primary" onclick='comp.huffman()'>Huffman</button>
+                                 <input id="huffman" class="btn btn-primary " type="file" onchange="(comp.fileHuffman())"><br> </p> 
                                  <a id="a2" download="imagem.hr" type="octet/stream" charset='utf-8'>Download Compress Huffman</a></p> 
                                  <button class="btn btn-primary" onclick='comp.lzw()'>LZW</button></p>
+                                 <a id="r4" download="imagem.hr" type="octet/stream" charset='utf-8'>Download Compress LZW</a></p> 
                                  <button class="btn btn-primary" onclick='comp.run_length()'>Run-Length</button></p>
                                  <a id="r2" download="imagem.hr" type="octet/stream" charset='utf-8'>Download Compress Run-Length</a></p> 
                                  <button class="btn btn-primary" onclick='comp.huffman_run_length()'>Huffman and Run-Length</button></p>
                                  <a id="r3" download="imagem.hr" type="octet/stream" charset='utf-8'>Download Compress Huffman and Run-Length</a></p> 
+                                 <button class="btn btn-primary" onclick='comp.huffman_lzw()'>Huffman and LZW</button>
+                                 <input id="huffmanlzw" class="btn btn-primary " type="file" onchange="(comp.fileHuffmanLzw())"><br> </p> 
+                                 <a id="a3" download="imagem.hr" type="octet/stream" charset='utf-8'>Download Compress Huffman and LZW</a></p> 
                                  <button class="btn btn-primary" onclick='comp.predictivecoding()'>Codificação Preditiva</button></p>
                                  <button class="btn btn-primary" onclick='comp.waveletencoding()'>Codificação Wavelet</button></p>
                                </div>
