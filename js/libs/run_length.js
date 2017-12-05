@@ -47,12 +47,21 @@ Run_length.prototype.encode = function(input) {
         count ++;
     }
     encoding.push([count, prev]);
-    // return uint;
-    var encodeString = String(encoding);
-    var uint = new Uint8Array(String(encoding).length);
+    var encodeString = "";
+    for(let i=0;i<encoding.length;i++){
+        for(let j=0;j<encoding[i].length;j++){
+            encodeString+=String(encoding[i][j])
+        }
+    }
+    console.log(encodeString.length)
+    var uint = new Uint8Array(encodeString.length);
+    console.log(encodeString.charCodeAt(j))
+    console.log(encodeString.charCodeAt(j).toString(2))
     for(let j=0;j<encodeString.length;j++){
         uint[j]=encodeString.charCodeAt(j);
     }
+    console.log(uint[0]);
+    console.log("feito")
     return uint;
 }
 Run_length.prototype.decode = function(input) {

@@ -110,12 +110,8 @@ compressions.prototype.run_length = function () {
         g[j] = (imgData.data[i+1]);
         b[j] = (imgData.data[i+2]);
     }
+    console.log(r.length);
     var run_lengthR = run.encode(r);
-    // var R = run.decode(run_lengthR);
-    // if(R == r){
-    //     console.log("True");
-    // }
-    // console.log(String(run_lengthR));
     console.log(run_lengthR);
     console.log((run_lengthR).length);       
     var file= run_lengthR;
