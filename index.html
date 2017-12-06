@@ -30,6 +30,7 @@
             <script src="./js/processingcolors.js" type="application/javascript"></script>
             <script src="./js/haar.js" type="application/javascript"></script>
             <script src="./js/compressions.js" type="application/javascript"></script>
+            <script src="./js/edg.js" type="application/javascript"></script>
             <script src="./js/utils.js" type="application/javascript"></script>
             <script src="./js/filters.js" type="application/javascript"></script>
 
@@ -71,6 +72,7 @@
                                 <li><a href="#7"  class="btn btn-outline-primary" data-toggle="tab">Proc. Cores.</a></li>
                                 <li><a href="#8"  class="btn btn-outline-primary" data-toggle="tab">HAAR</a></li>
                                 <li><a href="#9"  class="btn btn-outline-primary" data-toggle="tab">Comp. Imags.</a></li>
+                                <li><a href="#10"  class="btn btn-outline-primary" data-toggle="tab">E. D. G.</a></li>
                             </ul>
                             <div class="tab-content ">
                                 <div class="tab-pane active" id="1">
@@ -135,6 +137,15 @@
                                     <input id="constlocaladaptative" type="text" placeholder="Variância q"><br>
                                     <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value,document.getElementById("constlocaladaptative").value)'>Adaptativo de redução de ruído local </button>
                                     <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
+                                </div>
+                                <div class="tab-pane" id="10">
+                                    <input id="erosion" type="text" size=45 placeholder="Digite quantas vezes irá passar pela transformação"><br>
+                                    <button class="btn btn-primary" onclick='edg.erosion(document.getElementById("erosion").value)'>Erosão</button></p>
+                                    <input id="dilation" type="text" size=45 placeholder="Digite a cor (0,250,80) que deve ser substituida"><br>
+                                    <button class="btn btn-primary" onclick='edg.dilation(document.getElementById("dilation").value)'>Dilatação</button></p>
+                                    <input id="mgradient" type="text" size=45 placeholder="Digite a cor (0,250,80) que deve ser substituida"><br>
+                                    <button class="btn btn-primary" onclick='edg.mgradient(document.getElementById("mgradient").value)'>Gradiente Morfologico</button></p>
+
                                 </div>
                                 <div class="tab-pane" id="9">
                                 </p>

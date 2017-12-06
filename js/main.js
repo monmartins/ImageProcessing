@@ -1,6 +1,6 @@
  function previewFile(photo){
-    var widthDiv = 512;
-    var heightDiv = 512;
+    var widthDiv = document.getElementById("tam").offsetWidth;
+    var heightDiv = document.getElementById("tam").offsetHeight;
     var preview = document.querySelector('img'); //selects the query named img
     var previewOri = document.getElementById('imgOri'); //selects the query named img
     image    = document.querySelector('input[type=file]').files[0]; //sames as here
