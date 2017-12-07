@@ -8,7 +8,7 @@ EDG.prototype.set = function (preview) {
     this._preview = preview;
 }
 
-EDG.prototype.erosion = function(level){
+EDG.prototype.dilation = function(level){
     preview = edg.getPreview();
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(edg.getPreview(), 0, 0,preview.width, preview.height );
@@ -16,6 +16,7 @@ EDG.prototype.erosion = function(level){
     if(level == ""){
         level = 1;
     }
+    
     var auxData = new Array(imgData.data.length);
     for (var i=0;i<imgData.data.length;i+=4)
     {
@@ -59,7 +60,7 @@ EDG.prototype.erosion = function(level){
     
                     }
                 }
-                if(value>3){
+                if(value>0){
                     auxData[relativePosChoose]= r;      
                     auxData[relativePosChoose+1]=  g;       
                     auxData[relativePosChoose+2]=  b;  
@@ -82,7 +83,7 @@ EDG.prototype.erosion = function(level){
     ctxt.putImageData(imgData,0,0);
     return imgData;
 }
-EDG.prototype.dilation = function(level){
+EDG.prototype.erosion = function(level){
     preview = edg.getPreview();
     ctxt = canvas.getContext('2d');
     ctxt.drawImage(edg.getPreview(), 0, 0,preview.width, preview.height );
@@ -133,7 +134,7 @@ EDG.prototype.dilation = function(level){
     
                     }
                 }
-                if(value>2){
+                if(value>0){
                     auxData[relativePosChoose]= r;      
                     auxData[relativePosChoose+1]=  g;       
                     auxData[relativePosChoose+2]=  b;  
@@ -165,7 +166,7 @@ EDG.prototype.mgradient = function(gradient){
       var erosion = edg.erosion(gradient);
       for (var i=0;i<imgData.data.length;i++){
           if(dilation.data[i]!=erosion.data[i]){
-            imgData.data[i]=0;
+            imgData.data[i]=dilation.data[i]-erosion.data[i];
           }
 
       }
