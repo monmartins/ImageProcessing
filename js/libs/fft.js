@@ -1,220 +1,187 @@
-/* 
- * Free FFT and convolution (JavaScript)
- * 
- * Copyright (c) 2017 Project Nayuki. (MIT License)
- * https://www.nayuki.io/page/free-small-fft-in-multiple-languages
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- * - The above copyright notice and this permission notice shall be included in
- *   all copies or substantial portions of the Software.
- * - The Software is provided "as is", without warranty of any kind, express or
- *   implied, including but not limited to the warranties of merchantability,
- *   fitness for a particular purpose and noninfringement. In no event shall the
- *   authors or copyright holders be liable for any claim, damages or other
- *   liability, whether in an action of contract, tort or otherwise, arising from,
- *   out of or in connection with the Software or the use or other dealings in the
- *   Software.
- */
+import baseComplexArray from './complex_array';
 
-"use strict";
+// Math constants and functions we need.
+const PI = Math.PI;
+const SQRT1_2 = Math.SQRT1_2;
 
+export function FFT(input) {
+  return ensureComplexArray(input).FFT();
+};
 
-/* 
- * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
- * The vector can have any length. This is a wrapper function.
- */
-function transform(real, imag) {
-	var n = real.length;
-	if (n != imag.length)
-		throw "Mismatched lengths";
-	if (n == 0)
-		return;
-	else if ((n & (n - 1)) == 0)  // Is power of 2
-		transformRadix2(real, imag);
-	else  // More complicated algorithm for arbitrary sizes
-		transformBluestein(real, imag);
+export function InvFFT(input) {
+  return ensureComplexArray(input).InvFFT();
+};
+
+export function frequencyMap(input, filterer) {
+  return ensureComplexArray(input).frequencyMap(filterer);
+};
+
+export class ComplexArray extends baseComplexArray {
+  FFT() {
+    return fft(this, false);
+  }
+
+  InvFFT() {
+    return fft(this, true);
+  }
+
+  // Applies a frequency-space filter to input, and returns the real-space
+  // filtered input.
+  // filterer accepts freq, i, n and modifies freq.real and freq.imag.
+  frequencyMap(filterer) {
+    return this.FFT().map(filterer).InvFFT();
+  }
 }
 
-
-/* 
- * Computes the inverse discrete Fourier transform (IDFT) of the given complex vector, storing the result back into the vector.
- * The vector can have any length. This is a wrapper function. This transform does not perform scaling, so the inverse is not a true inverse.
- */
-function inverseTransform(real, imag) {
-	transform(imag, real);
+function ensureComplexArray(input) {
+  return input instanceof ComplexArray && input || new ComplexArray(input);
 }
 
+function fft(input, inverse) {
+  const n = input.length;
 
-/* 
- * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
- * The vector's length must be a power of 2. Uses the Cooley-Tukey decimation-in-time radix-2 algorithm.
- */
-function transformRadix2(real, imag) {
-	// Length variables
-	var n = real.length;
-	if (n != imag.length)
-		throw "Mismatched lengths";
-	if (n == 1)  // Trivial transform
-		return;
-	var levels = -1;
-	for (var i = 0; i < 32; i++) {
-		if (1 << i == n)
-			levels = i;  // Equal to log2(n)
-	}
-	if (levels == -1)
-		throw "Length is not a power of 2";
-	
-	// Trigonometric tables
-	var cosTable = new Array(n / 2);
-	var sinTable = new Array(n / 2);
-	for (var i = 0; i < n / 2; i++) {
-		cosTable[i] = Math.cos(2 * Math.PI * i / n);
-		sinTable[i] = Math.sin(2 * Math.PI * i / n);
-	}
-	
-	// Bit-reversed addressing permutation
-	for (var i = 0; i < n; i++) {
-		var j = reverseBits(i, levels);
-		if (j > i) {
-			var temp = real[i];
-			real[i] = real[j];
-			real[j] = temp;
-			temp = imag[i];
-			imag[i] = imag[j];
-			imag[j] = temp;
-		}
-	}
-	
-	// Cooley-Tukey decimation-in-time radix-2 FFT
-	for (var size = 2; size <= n; size *= 2) {
-		var halfsize = size / 2;
-		var tablestep = n / size;
-		for (var i = 0; i < n; i += size) {
-			for (var j = i, k = 0; j < i + halfsize; j++, k += tablestep) {
-				var l = j + halfsize;
-				var tpre =  real[l] * cosTable[k] + imag[l] * sinTable[k];
-				var tpim = -real[l] * sinTable[k] + imag[l] * cosTable[k];
-				real[l] = real[j] - tpre;
-				imag[l] = imag[j] - tpim;
-				real[j] += tpre;
-				imag[j] += tpim;
-			}
-		}
-	}
-	
-	// Returns the integer whose value is the reverse of the lowest 'bits' bits of the integer 'x'.
-	function reverseBits(x, bits) {
-		var y = 0;
-		for (var i = 0; i < bits; i++) {
-			y = (y << 1) | (x & 1);
-			x >>>= 1;
-		}
-		return y;
-	}
+  if (n & (n - 1)) {
+    return FFT_Recursive(input, inverse);
+  } else {
+    return FFT_2_Iterative(input, inverse);
+  }
 }
 
+function FFT_Recursive(input, inverse) {
+  const n = input.length;
 
-/* 
- * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
- * The vector can have any length. This requires the convolution function, which in turn requires the radix-2 FFT function.
- * Uses Bluestein's chirp z-transform algorithm.
- */
-function transformBluestein(real, imag) {
-	// Find a power-of-2 convolution length m such that m >= n * 2 + 1
-	var n = real.length;
-	if (n != imag.length)
-		throw "Mismatched lengths";
-	var m = 1;
-	while (m < n * 2 + 1)
-		m *= 2;
-	
-	// Trignometric tables
-	var cosTable = new Array(n);
-	var sinTable = new Array(n);
-	for (var i = 0; i < n; i++) {
-		var j = i * i % (n * 2);  // This is more accurate than j = i * i
-		cosTable[i] = Math.cos(Math.PI * j / n);
-		sinTable[i] = Math.sin(Math.PI * j / n);
-	}
-	
-	// Temporary vectors and preprocessing
-	var areal = newArrayOfZeros(m);
-	var aimag = newArrayOfZeros(m);
-	for (var i = 0; i < n; i++) {
-		areal[i] =  real[i] * cosTable[i] + imag[i] * sinTable[i];
-		aimag[i] = -real[i] * sinTable[i] + imag[i] * cosTable[i];
-	}
-	var breal = newArrayOfZeros(m);
-	var bimag = newArrayOfZeros(m);
-	breal[0] = cosTable[0];
-	bimag[0] = sinTable[0];
-	for (var i = 1; i < n; i++) {
-		breal[i] = breal[m - i] = cosTable[i];
-		bimag[i] = bimag[m - i] = sinTable[i];
-	}
-	
-	// Convolution
-	var creal = new Array(m);
-	var cimag = new Array(m);
-	convolveComplex(areal, aimag, breal, bimag, creal, cimag);
-	
-	// Postprocessing
-	for (var i = 0; i < n; i++) {
-		real[i] =  creal[i] * cosTable[i] + cimag[i] * sinTable[i];
-		imag[i] = -creal[i] * sinTable[i] + cimag[i] * cosTable[i];
-	}
+  if (n === 1) {
+    return input;
+  }
+
+  const output = new ComplexArray(n, input.ArrayType);
+
+  // Use the lowest odd factor, so we are able to use FFT_2_Iterative in the
+  // recursive transforms optimally.
+  const p = LowestOddFactor(n);
+  const m = n / p;
+  const normalisation = 1 / Math.sqrt(p);
+  let recursive_result = new ComplexArray(m, input.ArrayType);
+
+  // Loops go like O(n Σ p_i), where p_i are the prime factors of n.
+  // for a power of a prime, p, this reduces to O(n p log_p n)
+  for(let j = 0; j < p; j++) {
+    for(let i = 0; i < m; i++) {
+      recursive_result.real[i] = input.real[i * p + j];
+      recursive_result.imag[i] = input.imag[i * p + j];
+    }
+    // Don't go deeper unless necessary to save allocs.
+    if (m > 1) {
+      recursive_result = fft(recursive_result, inverse);
+    }
+
+    const del_f_r = Math.cos(2*PI*j/n);
+    const del_f_i = (inverse ? -1 : 1) * Math.sin(2*PI*j/n);
+    let f_r = 1;
+    let f_i = 0;
+
+    for(let i = 0; i < n; i++) {
+      const _real = recursive_result.real[i % m];
+      const _imag = recursive_result.imag[i % m];
+
+      output.real[i] += f_r * _real - f_i * _imag;
+      output.imag[i] += f_r * _imag + f_i * _real;
+
+      [f_r, f_i] = [
+        f_r * del_f_r - f_i * del_f_i,
+        f_i = f_r * del_f_i + f_i * del_f_r,
+      ];
+    }
+  }
+
+  // Copy back to input to match FFT_2_Iterative in-placeness
+  // TODO: faster way of making this in-place?
+  for(let i = 0; i < n; i++) {
+    input.real[i] = normalisation * output.real[i];
+    input.imag[i] = normalisation * output.imag[i];
+  }
+
+  return input;
 }
 
+function FFT_2_Iterative(input, inverse) {
+  const n = input.length;
 
-/* 
- * Computes the circular convolution of the given real vectors. Each vector's length must be the same.
- */
-function convolveReal(x, y, out) {
-	var n = x.length;
-	if (n != y.length || n != out.length)
-		throw "Mismatched lengths";
-	convolveComplex(x, newArrayOfZeros(n), y, newArrayOfZeros(n), out, newArrayOfZeros(n));
+  const output = BitReverseComplexArray(input);
+  const output_r = output.real;
+  const output_i = output.imag;
+  // Loops go like O(n log n):
+  //   width ~ log n; i,j ~ n
+  let width = 1;
+  while (width < n) {
+    const del_f_r = Math.cos(PI/width);
+    const del_f_i = (inverse ? -1 : 1) * Math.sin(PI/width);
+    for (let i = 0; i < n/(2*width); i++) {
+      let f_r = 1;
+      let f_i = 0;
+      for (let j = 0; j < width; j++) {
+        const l_index = 2*i*width + j;
+        const r_index = l_index + width;
+
+        const left_r = output_r[l_index];
+        const left_i = output_i[l_index];
+        const right_r = f_r * output_r[r_index] - f_i * output_i[r_index];
+        const right_i = f_i * output_r[r_index] + f_r * output_i[r_index];
+
+        output_r[l_index] = SQRT1_2 * (left_r + right_r);
+        output_i[l_index] = SQRT1_2 * (left_i + right_i);
+        output_r[r_index] = SQRT1_2 * (left_r - right_r);
+        output_i[r_index] = SQRT1_2 * (left_i - right_i);
+
+        [f_r, f_i] = [
+          f_r * del_f_r - f_i * del_f_i,
+          f_r * del_f_i + f_i * del_f_r,
+        ];
+      }
+    }
+    width <<= 1;
+  }
+
+  return output;
 }
 
+function BitReverseIndex(index, n) {
+  let bitreversed_index = 0;
 
-/* 
- * Computes the circular convolution of the given complex vectors. Each vector's length must be the same.
- */
-function convolveComplex(xreal, ximag, yreal, yimag, outreal, outimag) {
-	var n = xreal.length;
-	if (n != ximag.length || n != yreal.length || n != yimag.length
-			|| n != outreal.length || n != outimag.length)
-		throw "Mismatched lengths";
-	
-	xreal = xreal.slice();
-	ximag = ximag.slice();
-	yreal = yreal.slice();
-	yimag = yimag.slice();
-	transform(xreal, ximag);
-	transform(yreal, yimag);
-	
-	for (var i = 0; i < n; i++) {
-		var temp = xreal[i] * yreal[i] - ximag[i] * yimag[i];
-		ximag[i] = ximag[i] * yreal[i] + xreal[i] * yimag[i];
-		xreal[i] = temp;
-	}
-	inverseTransform(xreal, ximag);
-	
-	for (var i = 0; i < n; i++) {  // Scaling (because this FFT implementation omits it)
-		outreal[i] = xreal[i] / n;
-		outimag[i] = ximag[i] / n;
-	}
+  while (n > 1) {
+    bitreversed_index <<= 1;
+    bitreversed_index += index & 1;
+    index >>= 1;
+    n >>= 1;
+  }
+  return bitreversed_index;
 }
 
+function BitReverseComplexArray(array) {
+  const n = array.length;
+  const flips = new Set();
 
-function newArrayOfZeros(n) {
-	var result = [];
-	for (var i = 0; i < n; i++)
-		result.push(0);
-	return result;
+  for(let i = 0; i < n; i++) {
+    const r_i = BitReverseIndex(i, n);
+
+    if (flips.has(i)) continue;
+
+    [array.real[i], array.real[r_i]] = [array.real[r_i], array.real[i]];
+    [array.imag[i], array.imag[r_i]] = [array.imag[r_i], array.imag[i]];
+
+    flips.add(r_i);
+  }
+
+  return array;
+}
+
+function LowestOddFactor(n) {
+  const sqrt_n = Math.sqrt(n);
+  let factor = 3;
+
+  while(factor <= sqrt_n) {
+    if (n % factor === 0) return factor;
+    factor += 2;
+  }
+  return n;
 }

@@ -12,6 +12,10 @@
              <script src= "./js/libs/run_length.js" type="application/javascript"></script>
              <script src= "./js/libs/lzw.js" type="application/javascript"></script>
              <script src= "./js/libs/huffman.js" type="application/javascript"></script>
+             <!-- <script src= "./js/libs/fft.js" type="application/javascript"></script>
+             <script src= "./js/libs/fft_image.js" type="application/javascript"></script>
+             <script src= "./js/libs/fft.js" type="application/javascript"></script> -->
+             
              <link rel="stylesheet" href="./css/libs/bootstrap.css">
             
             <meta charset="utf-8">
@@ -33,6 +37,8 @@
             <script src="./js/edg.js" type="application/javascript"></script>
             <script src="./js/utils.js" type="application/javascript"></script>
             <script src="./js/filters.js" type="application/javascript"></script>
+            <script src="./js/fourier.js" type="application/javascript"></script>
+
 
 
         </header>
@@ -73,6 +79,7 @@
                                 <li><a href="#8"  class="btn btn-outline-primary" data-toggle="tab">HAAR</a></li>
                                 <li><a href="#9"  class="btn btn-outline-primary" data-toggle="tab">Comp. Imags.</a></li>
                                 <li><a href="#10"  class="btn btn-outline-primary" data-toggle="tab">E. D. G.</a></li>
+                                <li><a href="#11"  class="btn btn-outline-primary" data-toggle="tab">Fourier</a></li>
                             </ul>
                             <div class="tab-content ">
                                 <div class="tab-pane active" id="1">
@@ -137,6 +144,9 @@
                                     <input id="constlocaladaptative" type="text" placeholder="Variância q"><br>
                                     <button class="btn btn-primary" onclick='rest.adaptiveLocal(document.getElementById("xyaritmetic").value,document.getElementById("constlocaladaptative").value)'>Adaptativo de redução de ruído local </button>
                                     <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button></p>
+                                </div>
+                                <div class="tab-pane" id="11">
+                                    <button class="btn btn-primary" onclick='fourier.transformFFT()'>FFT</button>
                                 </div>
                                 <div class="tab-pane" id="10">
                                     <input id="erosion" type="text" size=45 placeholder="Digite quantas vezes irá passar pela transformação"><br>
