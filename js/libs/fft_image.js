@@ -1,4 +1,4 @@
-import * as fft from './fft';
+//import * as fft from './fft';
 
 fft.FFTImageDataRGBA = function(data, nx, ny) {
   const rgb = splitRGB(data);
