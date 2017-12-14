@@ -9,34 +9,39 @@ fourierTransform.prototype.set = function (preview) {
 }
 
 fourierTransform.prototype.transformFFT = function () {
-    preview = wave.getPreview();
-    ctxt = canvas.getContext('2d');
-    ctxt.drawImage(wave.getPreview(), 0, 0, preview.width, preview.height);
-    var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
+    var input = document.getElementById("input_photo");
+    input.onchange="handleImage(event)";
+    
+    // <input id="image-picker" name="imagePicker" onchange="handleImage(event)" type="file"
+    // data-allowed-file-extensions='["bmp","png", "jpg", "jpeg"]'/>
+    // preview = wave.getPreview();
+    // ctxt = canvas.getContext('2d');
+    // ctxt.drawImage(wave.getPreview(), 0, 0, preview.width, preview.height);
+    // var imgData = ctxt.getImageData(0, 0, preview.width, preview.height);
 
-    r = []
-    g = []
-    b = []
-    for(let i=0; i<imgData.data.length/4; i++) {
-        r[i] = imgData.data[4*i]
-        g[i] = imgData.data[4*i+1]
-        b[i] = imgData.data[4*i+2]
-    }
-    out_r = []
-    out_g = []
-    out_b = []
-    Fourier.transform(r, out_r)
-    Fourier.transform(g, out_g)
-    Fourier.transform(b, out_b)
+    // r = []
+    // g = []
+    // b = []
+    // for(let i=0; i<imgData.data.length/4; i++) {
+    //     r[i] = imgData.data[4*i]
+    //     g[i] = imgData.data[4*i+1]
+    //     b[i] = imgData.data[4*i+2]
+    // }
+    // out_r = []
+    // out_g = []
+    // out_b = []
+    // Fourier.transform(r, out_r)
+    // Fourier.transform(g, out_g)
+    // Fourier.transform(b, out_b)
 
-    //console.log(out)
-    for(let i=0; i<imgData.data.length/4; i++) {
-        imgData.data[4*i] = out_r[i].real
-        imgData.data[4*i+1] = out_g[i].real
-        imgData.data[4*i+2] = out_b[i].real
-    }
+    // //console.log(out)
+    // for(let i=0; i<imgData.data.length/4; i++) {
+    //     imgData.data[4*i] = out_r[i].real
+    //     imgData.data[4*i+1] = out_g[i].real
+    //     imgData.data[4*i+2] = out_b[i].real
+    // }
 
-    ctxt.putImageData(imgData, 0, 0)
+    // ctxt.putImageData(imgData, 0, 0)
 }
 
 var fourierTransform = new fourierTransform();
