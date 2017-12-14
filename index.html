@@ -11,9 +11,9 @@
     <script src="./js/libs/run_length.js" type="application/javascript"></script>
     <script src="./js/libs/lzw.js" type="application/javascript"></script>
     <script src="./js/libs/huffman.js" type="application/javascript"></script>
-    <script src="./js/libs/fourier.js" type="application/javascript"></script>
-    <script src="./js/libs/d3.js" type="application/javascript"></script>
-    <script src="./js/libs/canvas_editor.js" type="application/javascript"></script>
+    <!--<script src="./js/libs/fourier.js" type="application/javascript"></script>
+     <script src="./js/libs/d3.js" type="application/javascript"></script>
+    <script src="./js/libs/canvas_editor.js" type="application/javascript"></script> -->
     
 
     <link rel="stylesheet" href="./css/libs/bootstrap.css">
@@ -36,9 +36,10 @@
     <script src="./js/compressions.js" type="application/javascript"></script>
     <script src="./js/edg.js" type="application/javascript"></script>
     <script src="./js/utils.js" type="application/javascript"></script>
-    <script src="./js/fourierTransform.js" type="application/javascript"></script>
-    <script src="./js/mainfourier.js" type="application/javascript"></script>
+    <script src="./js/fourier.js" type="application/javascript"></script>
+    <!--<script src="./js/mainfourier.js" type="application/javascript"></script>-->
     <script src="./js/filters.js" type="application/javascript"></script>
+    <!--<script src="./js/fourierTransform.js" type="application/javascript"></script>-->
 
 
 
@@ -202,8 +203,12 @@
                                 </p>
                             </div>
                             <div class="tab-pane" id="11">
-                                <!-- <button class="btn btn-primary" onclick='fourierTransform.transformFFT()'>FFT</button> -->
-                                <div>
+                                <br />
+                                <br />
+                                <button class="btn btn-primary" onclick='fourier.transformFFT()'>FFT</button> 
+                                <br />
+                                <br />
+                                <!--<div>
                                     <div>
                                         <input id="image-picker" name="imagePicker" onchange="handleImage(event)" type="file"
                                         data-allowed-file-extensions='["bmp","png", "jpg", "jpeg"]'/>
@@ -211,7 +216,7 @@
                                     <div>
                                         <div id="canvas-div"/>
                                     </div>
-                                </div>
+                                </div>-->
                             </div></div>
 
                             <div class="tab-pane" id="10">
