@@ -11,9 +11,9 @@
     <script src="./js/libs/run_length.js" type="application/javascript"></script>
     <script src="./js/libs/lzw.js" type="application/javascript"></script>
     <script src="./js/libs/huffman.js" type="application/javascript"></script>
-    <!--<script src="./js/libs/fourier.js" type="application/javascript"></script>
+    <script src="./js/libs/fourier.js" type="application/javascript"></script>
      <script src="./js/libs/d3.js" type="application/javascript"></script>
-    <script src="./js/libs/canvas_editor.js" type="application/javascript"></script> -->
+    <script src="./js/libs/canvas_editor.js" type="application/javascript"></script>
     
 
     <link rel="stylesheet" href="./css/libs/bootstrap.css">
@@ -37,7 +37,7 @@
     <script src="./js/edg.js" type="application/javascript"></script>
     <script src="./js/utils.js" type="application/javascript"></script>
     <script src="./js/fourier.js" type="application/javascript"></script>
-    <!--<script src="./js/mainfourier.js" type="application/javascript"></script>-->
+    <script src="./js/mainfourier.js" type="application/javascript"></script>
     <script src="./js/filters.js" type="application/javascript"></script>
     <!--<script src="./js/fourierTransform.js" type="application/javascript"></script>-->
 
@@ -156,7 +156,14 @@
 
 
                             </div>
+                            <div class="tab-pane" id="11">
+                            </p>
+                            <p>
+                                    <button class="btn btn-primary" onclick='fourier.transformFFT()'>FFT</button> 
+                                </div>
                             <div class="tab-pane" id="2">
+                            </p>
+                            <p>
                                 <button class="btn btn-primary" onclick='hist.histogram()'>Histograma</button>
                                 </p>
                                 <div id="histogramDiv"></div>
@@ -176,6 +183,8 @@
 
                             </div>
                             <div class="tab-pane" id="4">
+                            </p>
+                            <p>
                                 <input id="xyaritmetic" type="text" placeholder="(x,y) Quantidade de linhas(x) e colunas(y)">
                                 <br>
                                 <button class="btn btn-primary" onclick='rest.aritmeticMean(document.getElementById("xyaritmetic").value)'>Média aritmética</button>
@@ -202,24 +211,11 @@
                                 <button class="btn btn-primary" onclick='rest.adaptiveMedian(document.getElementById("xyaritmetic").value)'>Adaptativo da Mediana </button>
                                 </p>
                             </div>
-                            <div class="tab-pane" id="11">
-                                <br />
-                                <br />
-                                <button class="btn btn-primary" onclick='fourier.transformFFT()'>FFT</button> 
-                                <br />
-                                <br />
-                                <!--<div>
-                                    <div>
-                                        <input id="image-picker" name="imagePicker" onchange="handleImage(event)" type="file"
-                                        data-allowed-file-extensions='["bmp","png", "jpg", "jpeg"]'/>
-                                    </div>
-                                    <div>
-                                        <div id="canvas-div"/>
-                                    </div>
-                                </div>-->
-                            </div></div>
+
 
                             <div class="tab-pane" id="10">
+                            </p>
+                            <p>
                                 <input id="erosion" type="text" size=45 placeholder="Digite quantas vezes irá passar pela transformação">
                                 <br>
                                 <button class="btn btn-primary" onclick='edg.erosion(document.getElementById("erosion").value)'>Erosão</button>
@@ -335,6 +331,8 @@
                             </div>
 
                             <div class="tab-pane" id="3">
+                            </p>
+                            <p>
                                 <div id="exTab23" class="container">
                                     <ul class="nav nav-tabs">
                                         <li class="active">

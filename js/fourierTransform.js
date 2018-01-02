@@ -9,8 +9,8 @@ fourierTransform.prototype.set = function (preview) {
 }
 
 fourierTransform.prototype.transformFFT = function () {
-    var input = document.getElementById("input_photo");
-    input.onchange="handleImage(event)";
+    // var input = document.getElementById("input_photo");
+    // input.onchange="handleImage(event)";
 }
 
 var fourierTransform = new fourierTransform();

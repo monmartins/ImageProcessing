@@ -1,12 +1,12 @@
-var canvas;
+var canvasEdit;
 
 window.onload = function() {
-	canvas = ce.createCanvas('canvas-div', 400, 400);
+	canvasEdit = ce.createCanvas('canvas-div', 530, 813);
 }
 
 function handleImage(e) {
 	var reader = new FileReader();
-	reader.onload = event => canvas.loadImage(event.target.result);
+	reader.onload = event => canvasEdit.loadImage(event.target.result);
 	reader.readAsDataURL(e.target.files[0]);
 }
 

@@ -457,7 +457,7 @@ fourier.prototype.transformFFT = function () {
         imgData.data[i+2] = mag[i/4]
     }
 
-
+    canvasEdit.setImageData(imgData,preview.width,preview.height);
     ctxt.putImageData(imgData, 0, 0)
 }
 

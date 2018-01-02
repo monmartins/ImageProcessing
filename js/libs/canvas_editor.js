@@ -1,12 +1,12 @@
 var ce = {};
 
 ce.createCanvas = function (parentId, width, height) {
-    let canvas = ce.Canvas()
+    let canvasEdit = ce.Canvas()
         .parentId(parentId)
         .width(width)
         .height(height);
-    canvas.render();
-    return canvas;
+        canvasEdit.render();
+    return canvasEdit;
 }
 
 ce.Canvas = function() {
@@ -64,9 +64,9 @@ ce.Canvas = function() {
         return self._imgData;
     }
 
-    self.setImageData = function(imgData) {
+    self.setImageData = function(imgData,width,height) {
         self._imgData = imgData;
-        self._ctx.putImageData(imgData, 0, 0, 0, 0, self._canvas.width, self._canvas.height);
+        self._ctx.putImageData(imgData, 0, 0, 0, 0,width,height /*self._canvas.width, self._canvas.height*/);
     }
 
     self.id = function(id) {
