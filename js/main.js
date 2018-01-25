@@ -11,8 +11,9 @@
     reader.onloadend = function () {
         preview =document.createElement('img');
         preview.src = reader.result;
-        canvasEdit.loadImage(reader.result);
+        // canvasEdit.loadImage(reader.result);
         preview.onload = function () {
+            var canvas = document.getElementById("canvas");
             console.log(widthDiv)
             console.log(heightDiv)
             if(preview.width>widthDiv){
